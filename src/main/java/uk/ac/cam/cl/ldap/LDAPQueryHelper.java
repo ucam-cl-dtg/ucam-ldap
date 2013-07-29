@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.ldap;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -114,5 +115,25 @@ public class LDAPQueryHelper {
 		LDAPUser u = um.getUserObject(crsid);
 		
 		return u.getPhotos();
+	}
+	
+	/**
+	 * Get user's basic information: registered name, surname, email
+	 * @return String photo
+	 */
+	protected static HashMap<String, String> getUserEssentials(String crsid){
+		
+		LDAPUserManager um = LDAPUserManager.getInstance();
+		
+		LDAPUser u = um.getUserObject(crsid);
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		
+		data.put("crsid", crsid);
+		data.put("cName", u.getcName());
+		data.put("surname", u.getSurname());
+		data.put("email", u.getEmail());
+		
+		return data;
 	}
 }

@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.ldap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -9,8 +10,7 @@ import com.google.common.collect.ImmutableMap;
  * @author      Holly Priest <hp343@cam.ac.uk>
  * @version     1                
  * This class will provide all the public methods to get information about a user. 
- * (I think) This will be the only class that is public, the rest will be accessed by
- * the package only.
+ * This is the only class with public methods, all LDAP queries should be done through this class
  * 
  */
 public class LDAPQueryManager {
@@ -33,8 +33,8 @@ public class LDAPQueryManager {
 	public static String getUserPhoto(String crsid){
 		return LDAPQueryHelper.getPrimaryPhoto(crsid);
 	}
-	public static ImmutableMap<String,?> getUserEssentials(String crsid){
-		return ImmutableMap.of();
+	public static HashMap<String, String> getUserEssentials(String crsid){
+		return LDAPQueryHelper.getUserEssentials(crsid);
 	}	
 	public static ImmutableMap<String,?> getUserAll(String crsid){
 		return ImmutableMap.of();
