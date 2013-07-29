@@ -1,5 +1,3 @@
-# LDAPQueryManager
-=======
 ucam-ldap
 =========
 
