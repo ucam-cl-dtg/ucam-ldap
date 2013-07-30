@@ -28,20 +28,19 @@ public class LDAPUser {
 	/**
 	 * Class constructor taking a crsid of the user to lookup
 	 */
-	protected LDAPUser(String crsid){
+	protected LDAPUser(String crsid, String cName, String surname, String email,
+				List<String> institutions, List<String> status, List<String> photos){
 		
 		this.crsid = crsid;
 			
 		// set default values
-		this.cName = "Unknown user";
-		this.surname = "Unknown user";
-		this.email = "No email";
-		this.institutions = Arrays.asList("No institutions");
-		this.status = Arrays.asList("Student");
-		this.photos = Arrays.asList("none");
+		this.cName = ifNull(cName,"Unknown user");
+		this.surname = ifNull(surname,"Unknown user");
+		this.email = ifNull(email,"No email");
+		this.institutions = ifNull(institutions,Arrays.asList("No institutions"));
+		this.status = ifNull(status,Arrays.asList("Student"));
+		this.photos = ifNull(photos,Arrays.asList("none"));
 		
-		// get and store user info
-		getUserInfo();
 		
 	}
 	
@@ -50,9 +49,6 @@ public class LDAPUser {
 	 * @return String displayName
 	 */
 	protected String getcName(){
-		if(cName==null){
-			getUserInfo();
-		}
 			return cName;
 	}
 	
@@ -96,21 +92,6 @@ public class LDAPUser {
 	 */
 	protected List<String> getPhotos(){
 		return photos;
-	}
-	
-	/**
-	 * Gets all information related to user and caches it
-	 */
-	protected void getUserInfo(){
-		HashMap<String, ?> userData = LDAPProvider.fullUserQuery(crsid);
-		
-		this.cName = ifNull(userData.get("cName"),"Unknown");
-		this.surname = ifNull(userData.get("surname"),"Unknown");
-		this.email =  ifNull(userData.get("email"),"No email");
-		this.institutions = Collections.unmodifiableList(ifNull(userData.get("institutions"),Arrays.asList("No Institution")));
-		this.status = Collections.unmodifiableList(ifNull(userData.get("status"),Arrays.asList("Student")));
-		this.photos = Collections.unmodifiableList(ifNull(userData.get("photos"),Arrays.asList("none")));;		
-
 	}	
 
 	/**

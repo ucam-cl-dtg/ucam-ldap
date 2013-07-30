@@ -30,7 +30,7 @@ class LDAPUserManager {
 				.build(
 						new CacheLoader<String, LDAPUser>() {
 							public LDAPUser load(String crsid){
-								return new LDAPUser(crsid);
+								return LDAPProvider.uniqueUserQuery("uid", crsid);
 							}
 						});
 	}
