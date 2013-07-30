@@ -37,14 +37,16 @@ public class LDAPProvider {
 	 * Initialises context and sets up basic query
 	 * @return NamingEnumeration<SearchResult>
 	 */
-	private static NamingEnumeration<SearchResult> initialiseContext(String type, String parameter, String subtree) {
+	private static NamingEnumeration<SearchResult> initialiseContext(String type, String parameter, String subtree, boolean partial) {
 		
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, PROVIDER_URL);
 		
 		String searchContext = "ou=" + subtree + "," + CONTEXT_FILTER;
-		String searchParameters = "(" + type + "=" + parameter + ")";
+		String searchParameters;
+		if(partial) { searchParameters = "(" + type + "=" + parameter + "*)";}
+		else { searchParameters = "(" + type + "=" + parameter + ")";}
 		
 		DirContext ctx;
 		NamingEnumeration<SearchResult> searchResults;
@@ -72,7 +74,7 @@ public class LDAPProvider {
 		SearchResult searchResult;
 		
 		try {
-			searchResult = initialiseContext(type, parameter, subtree).next();
+			searchResult = initialiseContext(type, parameter, subtree, false).next();
 			
 			if(searchResult==null){ return null;}
 			
@@ -100,9 +102,9 @@ public class LDAPProvider {
 	 * List of users Query
 	 * Returns a list of LDAPUser objects
 	 */
-	protected static ArrayList<LDAPUser> multipleUserQuery(String type, String parameter) {
+	protected static ArrayList<LDAPUser> multipleUserQuery(String type, String parameter, boolean partial) {
 		
-		NamingEnumeration<SearchResult> searchResults = initialiseContext(type, parameter, "people");
+		NamingEnumeration<SearchResult> searchResults = initialiseContext(type, parameter, "people", partial);
 		
 		ArrayList<LDAPUser> users = new ArrayList<LDAPUser>();
 		
@@ -250,50 +252,7 @@ public class LDAPProvider {
 		return new LDAPGroup(groupID, groupTitle, description, users);
 
 	}
-	
-//	/**
-//	 * Partial User Query
-//	 * Constructs and calls final query, returning immutable map of crsid, displayname, surname
-//	 * Includes partial matches in search
-//	 * Takes 2 arguments: attribute to search (eg. uid) and, string x to match results with
-//	 * Possible subtrees to search: people, groups, institutions
-//	 * @return List<ImmutableMap<String,?>>
-//	 */
-//	public static List partialUserQuery(String x, String type){
-//		
-//		Hashtable env = setupQuery();
-//		NamingEnumeration<SearchResult> enumResults;
-//		
-//		Attributes a = null;
-//		try {
-//			DirContext ctx = new InitialDirContext(env);
-//			SearchControls controls = new SearchControls();
-//			controls.setReturningAttributes(new String[]{"uid", "displayName", "sn"});
-//			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-//			enumResults = ctx.search(
-//					"ou=people,o=University of Cambridge,dc=cam,dc=ac,dc=uk",
-//					"("+type+"=" + x + "*)", controls);
-//		} catch (Exception e) {
-//			return null;
-//		}
-//		
-//		try {
-//			ArrayList<ImmutableMap<String,?>> userMatches = new ArrayList<ImmutableMap<String,?>>();			
-//			
-//			// Convert enumeration type results to string
-//				while(enumResults.hasMore()){
-//					Attributes result = enumResults.next().getAttributes();
-//					userMatches.add(ImmutableMap.of("crsid", result.get("uid").get().toString(), "name", result.get("displayName").get().toString(), "surname", result.get("sn").get().toString()));
-//				}
-//				
-//			return userMatches;
-//					
-//        } catch (NamingException e) {
-//			return null;
-//		} 
-//		
-//	}
-//	
+
 //	/**
 //	 * Partial Group Query
 //	 * Constructs and calls final query, returning immutable map of crsid, displayname, surname
