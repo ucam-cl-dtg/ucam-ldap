@@ -36,8 +36,8 @@ public class LDAPQueryManager {
 	public static HashMap<String, String> getUserEssentials(String crsid){
 		return LDAPQueryHelper.getUserEssentials(crsid);
 	}	
-	public static ImmutableMap<String,?> getUserAll(String crsid){
-		return ImmutableMap.of();
+	public static HashMap<String,?> getUserAll(String crsid){
+		return LDAPQueryHelper.getUserAll(crsid);
 	}	
 	
 	//Less important methods for users

@@ -89,7 +89,7 @@ public class LDAPProvider {
 	 * Takes 2 arguments: attribute to search (eg. uid) and r to search with
 	 * @return LDAPUser
 	 */
-	public static LDAPUser uniqueUserQuery(String type, String parameter) {
+	protected static LDAPUser uniqueUserQuery(String type, String parameter) {
 		
 		Attributes userResult = setupUniqueQuery(type, parameter, "people");
 
@@ -100,7 +100,7 @@ public class LDAPProvider {
 	 * List of users Query
 	 * Returns a list of LDAPUser objects
 	 */
-	public static ArrayList<LDAPUser> multipleUserQuery(String type, String parameter) {
+	protected static ArrayList<LDAPUser> multipleUserQuery(String type, String parameter) {
 		
 		NamingEnumeration<SearchResult> searchResults = initialiseContext(type, parameter, "people");
 		
@@ -125,59 +125,58 @@ public class LDAPProvider {
 	 */
 	private static LDAPUser initLDAPUser(Attributes userResult) {
 
-		// Get crisd
-		String crsid = userResult.get("uid").toString();		
-		
-		// Get registered name
-		String cn = userResult.get("cn").toString();
-		
-		// Get surname
-		String sn = userResult.get("sn").toString();
-		
-		// Get email
-		String mail = userResult.get("mail").toString();
-		
-		// Get misAffiliation
-		NamingEnumeration<?> misAffEnum;
-		ArrayList<String> misAff;
+		String crsid;
+		String cn;
+		String sn;
+		String mail;
+		List<String> misAff;
+		List<String> institutions;
+		List<String> photos;
+
 		try {
-			 misAffEnum = userResult.get("misAffiliation").getAll();
-			 misAff = new ArrayList<String>();
-			 
-			 while(misAffEnum.hasMore()){
-				 misAff.add(misAffEnum.next().toString());
-			 }	 
-		} catch (NamingException e){
-			misAff = null;
-		}
+			// Get crisd
+			crsid = userResult.get("uid").get().toString();	
 		
-		// Get institutions
-		NamingEnumeration<?> instEnum;
-		ArrayList<String> institutions;
-		try {
-			 instEnum = userResult.get("ou").getAll();
-			 institutions = new ArrayList<String>();
-			 
-			 while(instEnum.hasMore()){
-				 institutions.add(instEnum.next().toString());
-			 }	 
-		} catch (NamingException e){
-			institutions = null;
-		}
+			// Get registered name
+			cn = userResult.get("cn").get().toString();
 		
-		// Get photos
-		NamingEnumeration<?> photoEnum;
-		ArrayList<String> photos;
-		try {
-			 photoEnum = userResult.get("jpegPhoto").getAll();
-			 photos = new ArrayList<String>();
+			// Get surname
+			sn = userResult.get("sn").get().toString();
+		
+			// Get email
+			mail = userResult.get("mail").get().toString();
+		
+			// Get misAffiliation
+			NamingEnumeration<?> misAffEnum;
+				 misAffEnum = userResult.get("misAffiliation").getAll();
+				 misAff = new ArrayList<String>();
+				 
+				 while(misAffEnum.hasMore()){
+					 misAff.add(misAffEnum.next().toString());
+				 }	 
+			
+			// Get institutions
+			NamingEnumeration<?> instEnum;
+				 instEnum = userResult.get("ou").getAll();
+				 institutions = new ArrayList<String>();
+				 
+				 while(instEnum.hasMore()){
+					 institutions.add(instEnum.next().toString());
+				 }	 
+	
+			// Get photos
+			NamingEnumeration<?> photoEnum;
+	
+				 photoEnum = userResult.get("jpegPhoto").getAll();
+				 photos = new ArrayList<String>();
+				 
+				 while(photoEnum.hasMore()){
+						byte[] p = (byte[])photoEnum.next();
+						photos.add(new String(Base64.encodeBase64(p)));	
+				 }	 
 			 
-			 while(photoEnum.hasMore()){
-					byte[] p = (byte[])photoEnum.next();
-					photos.add(new String(Base64.encodeBase64(p)));	
-			 }	 
-		} catch (NamingException e){
-			photos = null;
+		} catch(NamingException e){
+			return null;
 		}
 		
 		if(crsid==null){ // If uid is null the user does not exist

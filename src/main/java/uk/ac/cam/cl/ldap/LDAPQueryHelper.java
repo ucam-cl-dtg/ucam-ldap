@@ -141,18 +141,21 @@ public class LDAPQueryHelper {
 	 * Get all user's information
 	 * @return String photo
 	 */
-	protected static HashMap<String, String> getUserAll(String crsid){
+	protected static HashMap<String, ?> getUserAll(String crsid){
 		
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
 		LDAPUser u = um.getUserObject(crsid);
 		
-		HashMap<String, String> data = new HashMap<String, String>();
+		HashMap<String, Object> data = new HashMap<String, Object>();
 		
 		data.put("crsid", crsid);
 		data.put("cName", u.getcName());
 		data.put("surname", u.getSurname());
 		data.put("email", u.getEmail());
+		data.put("institutions", u.getInstitutions());
+		data.put("photos", u.getPhotos());
+		data.put("status", u.getStatus());
 		
 		return data;
 	}
