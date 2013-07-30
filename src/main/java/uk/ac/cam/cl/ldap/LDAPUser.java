@@ -1,6 +1,5 @@
 package uk.ac.cam.cl.ldap;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -119,6 +118,6 @@ public class LDAPUser {
 	 */
 	@SuppressWarnings("unchecked")
 	private static <T> T ifNull(Object v,T d) {
-		if (v == null) return d; else return (T)v;
+		return v == null ? d : (T) v;
 	}
 }

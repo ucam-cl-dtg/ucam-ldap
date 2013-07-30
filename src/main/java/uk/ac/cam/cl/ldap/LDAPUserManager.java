@@ -5,9 +5,9 @@ import java.util.concurrent.ConcurrentMap;
 import com.google.common.collect.MapMaker;
 
 /**
- * @version     1                
- * A singleton class containing a (weak, concurrent) hashmap of crsid to a user object
- * Caches the user object with all their data. 
+ * A singleton class containing a map from CRSid to a softly referenced user
+ * object. Caches the user object with all their data. Supports concurrent
+ * accesses. 
  */
 class LDAPUserManager {
 	
@@ -19,7 +19,7 @@ class LDAPUserManager {
 	
 	private LDAPUserManager(){
 		// Create a concurrent map with weak keys, default capacity 16
-		userMap = new MapMaker().weakKeys().makeMap();
+		userMap = new MapMaker().softValues().makeMap();
 	}
 	
 	/**

@@ -52,9 +52,10 @@ public class LDAPProvider {
 	 */
 	public static String uniqueQuery(String type, String parameter, String result, String subtree) {
 		
-		Hashtable env = setupQuery();
+		Hashtable<String, String> env = setupQuery();
 
-		Attributes a = null;
+		Attributes a;
+		
 		try {
 			DirContext ctx = new InitialDirContext(env);
 			SearchControls controls = new SearchControls();
@@ -63,22 +64,14 @@ public class LDAPProvider {
 					"ou="+ subtree+",o=University of Cambridge,dc=cam,dc=ac,dc=uk",
 					"("+type+"=" + parameter + ")", controls).next();
 			a = searchResult.getAttributes();
-		} catch (NullPointerException e) {
-			return null;
-		} catch (Exception e){	
-		}
-		
-		//If no match in search
-		if(a==null){ return null;}
-		
-		try {
-        	return a.get(result).get().toString();
-        } catch (NamingException e) {
-			return null;
-		} catch (NullPointerException e) {
+			//If no match in search
+			if(a==null){ return null;}
+			
+			return a.get(result).get().toString();
+		} catch (NamingException e1) {
+			e1.printStackTrace();
 			return null;
 		}
-		
 	}
 	
 	/**
