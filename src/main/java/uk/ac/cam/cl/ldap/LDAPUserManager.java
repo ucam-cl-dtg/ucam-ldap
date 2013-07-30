@@ -45,6 +45,11 @@ class LDAPUserManager {
 		} catch (ExecutionException e) {
 			return null;
 		}
+		
+		if(user==null){
+			// Throw user doesnt exist exception
+		}
+		
 		return user;
 	}
 

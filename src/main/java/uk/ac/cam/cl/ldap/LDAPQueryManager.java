@@ -2,6 +2,7 @@ package uk.ac.cam.cl.ldap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -27,6 +28,9 @@ public class LDAPQueryManager {
 	public static String getUserEmail(String crsid){
 		return LDAPQueryHelper.getEmail(crsid);
 	}
+	public static String getUserStatus(String crsid){
+		return LDAPQueryHelper.getStatus(crsid);
+	}
 	public static String getUserInstitution(String crsid){
 		return LDAPQueryHelper.getInstitution(crsid);
 	}
@@ -49,15 +53,18 @@ public class LDAPQueryManager {
 	}	
 	//Methods for other things like phone number, role webpage?
 	
-	//Methods for groups and institutions - these dont use the usermanager(since they wont be used much)
-	public static ImmutableMap<String,?> getGroupName(String groupID){
-		return ImmutableMap.of();
+	//Methods for groups and institutions 
+	public static String getGroupName(String groupID){
+		return LDAPQueryHelper.getGroupName(groupID);
 	}	
-	public static ImmutableMap<String,?> getGroupMembers(String groupID){
-		return ImmutableMap.of();
+	public static String getGroupDescription(String groupID){
+		return LDAPQueryHelper.getGroupDescription(groupID);
 	}	
-	public static ImmutableMap<String,?> getGroupEssentials(String groupID){
-		return ImmutableMap.of();
+	public static List<String> getGroupUsers(String groupID){
+		return LDAPQueryHelper.getGroupUsers(groupID);
+	}	
+	public static HashMap<String, ?> getGroupEssentials(String groupID){
+		return LDAPQueryHelper.getGroupAll(groupID);
 	}	
 	
 	//Specific methods for autocomplete - do these use the user manager?

@@ -1,15 +1,13 @@
 package uk.ac.cam.cl.ldap;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * 
  * @author      Holly Priest <hp343@cam.ac.uk>
  * @version     1                
- * This class will provide all the information on a user, pulled (lazily?) from LDAP
+ * This class will provide all the information on a user, cached from LDAP
  * 
  */
 public class LDAPUser {
@@ -25,11 +23,9 @@ public class LDAPUser {
 	private List<String> status;
 	private List<String> photos;
 
-	/**
-	 * Class constructor taking a crsid of the user to lookup
-	 */
-	protected LDAPUser(String crsid, String cName, String surname, String email,
-				List<String> institutions, List<String> status, List<String> photos){
+	/** Class constructor taking a crsid of the user to lookup **/
+	protected LDAPUser(String crsid, String cName, String surname, String email, 
+				List<String> status, List<String> institutions,  List<String> photos){
 		
 		this.crsid = crsid;
 			

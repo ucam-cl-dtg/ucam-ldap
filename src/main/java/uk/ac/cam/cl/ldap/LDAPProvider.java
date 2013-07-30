@@ -119,8 +119,20 @@ public class LDAPProvider {
 	}
 	
 	/**
-	 * Unique user query
-	 * Returns an LDAPUser object
+	 * Unique group query
+	 * Returns an LDAPGroup object
+	 * Takes 2 arguments: attribute to search (eg. uid) and r to search with
+	 * @return LDAPUser
+	 */
+	protected static LDAPGroup uniqueGroupQuery(String type, String parameter) {
+		
+		Attributes groupResult = setupUniqueQuery(type, parameter, "groups");
+
+		return initLDAPGroup(groupResult);
+	}
+	
+	/**
+	 * Creates an LDAPUser object from attributes
 	 * @return LDAPUser
 	 */
 	private static LDAPUser initLDAPUser(Attributes userResult) {
@@ -184,6 +196,58 @@ public class LDAPProvider {
 		}
 		
 		return new LDAPUser(crsid, cn, sn, mail, misAff, institutions, photos);
+
+	}
+	
+	/**
+	 * Creates an LDAPGroup object from attributes
+	 * @return LDAPGroup
+	 */
+	private static LDAPGroup initLDAPGroup(Attributes groupResult) {
+
+		String groupID;
+		String groupTitle;
+		String description;
+		List<String> users;
+
+		try {
+			
+			if(!groupResult.get("visibility").get().toString().equals("cam")){
+				//Group not visible, return null
+			}
+			
+			// Get groupID
+			groupID = groupResult.get("groupID").get().toString();	
+			
+		
+			// Get group name
+			groupTitle = groupResult.get("groupTitle").get().toString();
+			
+		
+			// Get description
+			description = groupResult.get("description").get().toString();
+			
+		
+			// Get users
+			NamingEnumeration<?> usersEnum;
+				 usersEnum = groupResult.get("uid").getAll();
+				 users = new ArrayList<String>();
+				 
+				 while(usersEnum.hasMore()){
+					 users.add(usersEnum.next().toString());
+				 }	  
+				 
+				 System.out.println("Problem not with users");
+			 
+		} catch(NamingException e){
+			return null;
+		}
+		
+		if(groupID==null){ // If groupID is null the group does not exist
+			return null;
+		}
+		
+		return new LDAPGroup(groupID, groupTitle, description, users);
 
 	}
 	

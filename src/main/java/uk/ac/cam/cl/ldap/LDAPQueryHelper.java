@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class LDAPQueryHelper {
 	
+	// users
+	
 	/**
 	 * Get user's registered (common) name
 	 * @return String cName
@@ -139,7 +141,7 @@ public class LDAPQueryHelper {
 	
 	/**
 	 * Get all user's information
-	 * @return String photo
+	 * @return HashMap
 	 */
 	protected static HashMap<String, ?> getUserAll(String crsid){
 		
@@ -156,6 +158,70 @@ public class LDAPQueryHelper {
 		data.put("institutions", u.getInstitutions());
 		data.put("photos", u.getPhotos());
 		data.put("status", u.getStatus());
+		
+		return data;
+	}
+	
+	// groups
+	
+	/**
+	 * Get group  name
+	 * @return String groupName
+	 */
+	protected static String getGroupName(String groupID){
+		
+		LDAPGroupManager gm = LDAPGroupManager.getInstance();
+		
+		LDAPGroup g = gm.getGroupObject(groupID);
+		
+		return g.getName();
+		
+	}
+	
+	/**
+	 * Get group  description
+	 * @return String groupName
+	 */
+	protected static String getGroupDescription(String groupID){
+		
+		LDAPGroupManager gm = LDAPGroupManager.getInstance();
+		
+		LDAPGroup g = gm.getGroupObject(groupID);
+		
+		return g.getDescription();
+		
+	}
+	
+	/**
+	 * Get group  users
+	 * @return String groupName
+	 */
+	protected static List<String> getGroupUsers(String groupID){
+		
+		LDAPGroupManager gm = LDAPGroupManager.getInstance();
+		
+		LDAPGroup g = gm.getGroupObject(groupID);
+		
+		return g.getUsers();
+		
+	}
+	
+	/**
+	 * Get all groups's information
+	 * @return HashMap
+	 */
+	protected static HashMap<String, ?> getGroupAll(String groupID){
+		
+		LDAPGroupManager gm = LDAPGroupManager.getInstance();
+		
+		LDAPGroup g = gm.getGroupObject(groupID);
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		
+		data.put("groupID", groupID);
+		data.put("name", g.getName());
+		data.put("description", g.getDescription());
+		data.put("users", g.getUsers());
 		
 		return data;
 	}
