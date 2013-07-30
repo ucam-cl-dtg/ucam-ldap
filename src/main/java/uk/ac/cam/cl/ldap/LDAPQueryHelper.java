@@ -136,4 +136,24 @@ public class LDAPQueryHelper {
 		
 		return data;
 	}
+	
+	/**
+	 * Get all user's information
+	 * @return String photo
+	 */
+	protected static HashMap<String, String> getUserAll(String crsid){
+		
+		LDAPUserManager um = LDAPUserManager.getInstance();
+		
+		LDAPUser u = um.getUserObject(crsid);
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		
+		data.put("crsid", crsid);
+		data.put("cName", u.getcName());
+		data.put("surname", u.getSurname());
+		data.put("email", u.getEmail());
+		
+		return data;
+	}
 }

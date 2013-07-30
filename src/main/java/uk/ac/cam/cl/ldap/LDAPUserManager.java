@@ -1,8 +1,10 @@
 package uk.ac.cam.cl.ldap;
 
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * A singleton class containing a map from CRSid to a softly referenced user
@@ -14,25 +16,34 @@ class LDAPUserManager {
 	/** Singleton instance of LDAPUserManager */
 	private static LDAPUserManager um;
 	
-	/** Concurrent hash map with weak keys, using google-collections MapMaker */
-	private ConcurrentMap<String, LDAPUser> userMap;
+//	/** Concurrent hash map with weak keys, using google-collections MapMaker */
+//	private ConcurrentMap<String, LDAPUser> userMap;
+	
+	private LoadingCache<String, LDAPUser> userMap;
 	
 	private LDAPUserManager(){
-		// Create a concurrent map with weak keys, default capacity 16
-		userMap = new MapMaker().softValues().makeMap();
+		// Create a cache with soft keys
+		userMap = CacheBuilder.newBuilder()
+				.maximumSize(500)
+				.weakKeys()
+				.softValues()
+				.build(
+						new CacheLoader<String, LDAPUser>() {
+							public LDAPUser load(String crsid){
+								return new LDAPUser(crsid);
+							}
+						});
 	}
 	
 	/**
 	 * Gets LDAPUser object from the map. Object will be added if it is not there
 	 */
 	protected LDAPUser getUserObject(String crsid){
-		LDAPUser user = userMap.get(crsid);
-		if(user==null){
-			LDAPUser newUser = new LDAPUser(crsid);
-			user = userMap.putIfAbsent(crsid, newUser); //returns existing userobject if there is one
-			if(user==null){ 
-				user = newUser; // successful put, use newly created object
-			}
+		LDAPUser user;
+		try {
+			user = userMap.get(crsid);
+		} catch (ExecutionException e) {
+			return null;
 		}
 		return user;
 	}
