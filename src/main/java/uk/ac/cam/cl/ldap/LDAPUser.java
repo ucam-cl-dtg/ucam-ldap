@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.ldap;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * This class will provide all the information on a user, cached from LDAP
  * 
  */
-public class LDAPUser {
+public class LDAPUser extends LDAPObject {
 	
 	/**
 	 * Fields to cache user data once looked up
@@ -26,6 +27,8 @@ public class LDAPUser {
 	/** Class constructor taking a crsid of the user to lookup **/
 	protected LDAPUser(String crsid, String cName, String surname, String email, 
 				List<String> status, List<String> institutions,  List<String> photos){
+		
+		super();
 		
 		this.crsid = crsid;
 			
@@ -44,7 +47,8 @@ public class LDAPUser {
 	 * Get users crsid 
 	 * @return String crsid
 	 */
-	protected String getCRSID(){
+	@Override
+	protected String getID(){
 			return crsid;
 	}
 	
@@ -97,12 +101,22 @@ public class LDAPUser {
 	protected List<String> getPhotos(){
 		return photos;
 	}	
-
+	
 	/**
-	 * Set a default if a null value is returned from LDAP
+	 * Gets cName, surname, email
+	 * @return HashMap
 	 */
-	@SuppressWarnings("unchecked")
-	private static <T> T ifNull(Object v,T d) {
-		return v == null ? d : (T) v;
-	}
+	protected HashMap<String, String> getEssentials(){
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		
+		data.put("crsid", crsid);
+		data.put("cName", cName);
+		data.put("surname", surname);
+		data.put("email", email);
+		
+		return data;
+	}	
+	
+	
 }

@@ -10,7 +10,7 @@ import java.util.List;
  * This class will provide all the information on a group, cached from LDAP
  * 
  */
-public class LDAPGroup {
+public class LDAPGroup extends LDAPObject {
 	
 	/**
 	 * Fields to cache user data once looked up
@@ -22,6 +22,8 @@ public class LDAPGroup {
 
 	/** Class constructor **/
 	protected LDAPGroup(String groupID, String groupTitle, String description, List<String> users){
+		
+		super();
 		
 		this.groupID = groupID;
 			
@@ -36,6 +38,7 @@ public class LDAPGroup {
 	 * Get groupID
 	 * @return String groupID
 	 */
+	@Override
 	protected String getID(){
 			return groupID;
 	}
@@ -62,13 +65,5 @@ public class LDAPGroup {
 	 */
 	protected List<String> getUsers(){
 		return users;
-	}	
-
-	/**
-	 * Set a default if a null value is returned from LDAP
-	 */
-	@SuppressWarnings("unchecked")
-	private static <T> T ifNull(Object v,T d) {
-		return v == null ? d : (T) v;
 	}
 }
