@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Trie ADT class **/
+
 class LDAPTrie<T extends LDAPObject> {
 	
 	private Map<Character, LDAPTrieNode<T>> roots;
@@ -52,7 +52,7 @@ class LDAPTrie<T extends LDAPObject> {
 		}
 	}
 	
-	List<T> getMatches(String x){
+	List<T> getMatches(String x) throws LDAPObjectNotFoundException {
 		
 		char[] chars = x.toCharArray();
 		

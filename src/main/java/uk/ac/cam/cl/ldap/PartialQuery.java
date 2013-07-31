@@ -16,7 +16,7 @@ public class PartialQuery {
 		userMatches = new LDAPTrie<LDAPUser>();
 	}
 	
-	List<LDAPUser> userQuery(String x){
+	List<LDAPUser> userQuery(String x) throws LDAPObjectNotFoundException {
 		return userMatches.getMatches(x);
 	}
 	

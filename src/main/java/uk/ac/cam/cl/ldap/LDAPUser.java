@@ -25,7 +25,7 @@ public class LDAPUser extends LDAPObject {
 	private List<String> photos;
 
 	/** Class constructor taking a crsid of the user to lookup **/
-	protected LDAPUser(String crsid, String cName, String surname, String email, 
+	LDAPUser(String crsid, String cName, String surname, String email, 
 				List<String> status, List<String> institutions,  List<String> photos){
 		
 		super();
@@ -48,7 +48,7 @@ public class LDAPUser extends LDAPObject {
 	 * @return String crsid
 	 */
 	@Override
-	protected String getID(){
+	String getID(){
 			return crsid;
 	}
 	
@@ -56,7 +56,7 @@ public class LDAPUser extends LDAPObject {
 	 * Get users display name 
 	 * @return String displayName
 	 */
-	protected String getcName(){
+	String getcName(){
 			return cName;
 	}
 	
@@ -64,7 +64,7 @@ public class LDAPUser extends LDAPObject {
 	 * Get users surname
 	 * @return String surname
 	 */
-	protected String getSurname(){
+	String getSurname(){
 			return surname;
 	}
 	
@@ -72,7 +72,7 @@ public class LDAPUser extends LDAPObject {
 	 * Get users email
 	 * @return String email
 	 */
-	protected String getEmail(){
+	String getEmail(){
 		return email;
 	}
 	
@@ -80,7 +80,7 @@ public class LDAPUser extends LDAPObject {
 	 * Gets a list of institutions associated with user
 	 * @return String status
 	 */
-	protected List<String> getInstitutions(){
+	List<String> getInstitutions(){
 		return institutions;
 	}
 
@@ -89,7 +89,7 @@ public class LDAPUser extends LDAPObject {
 	 * If 'staff' misAffiliations user is present sets status as staff, otherwise student
 	 * @return String status
 	 */
-	protected List<String> getStatus(){
+	List<String> getStatus(){
 		return status;
 	}
 	
@@ -98,7 +98,7 @@ public class LDAPUser extends LDAPObject {
 	 * To display in soy template, use  <img src="data:image/jpeg;base64,{$user.photo}" /> or similar
 	 * @return String photo
 	 */
-	protected List<String> getPhotos(){
+	List<String> getPhotos(){
 		return photos;
 	}	
 	
@@ -106,7 +106,7 @@ public class LDAPUser extends LDAPObject {
 	 * Gets cName, surname, email
 	 * @return HashMap
 	 */
-	protected HashMap<String, String> getEssentials(){
+	HashMap<String, String> getEssentials(){
 		
 		HashMap<String, String> data = new HashMap<String, String>();
 		

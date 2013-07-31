@@ -21,7 +21,7 @@ public class LDAPGroup extends LDAPObject {
 	private List<String> users;
 
 	/** Class constructor **/
-	protected LDAPGroup(String groupID, String groupTitle, String description, List<String> users){
+	LDAPGroup(String groupID, String groupTitle, String description, List<String> users){
 		
 		super();
 		
@@ -47,7 +47,7 @@ public class LDAPGroup extends LDAPObject {
 	 * Get group name
 	 * @return String groupTitle
 	 */
-	protected String getName(){
+	String getName(){
 			return groupTitle;
 	}
 	
@@ -55,7 +55,7 @@ public class LDAPGroup extends LDAPObject {
 	 * Get group description
 	 * @return String description
 	 */
-	protected String getDescription(){
+	String getDescription(){
 			return description;
 	}
 	
@@ -63,7 +63,7 @@ public class LDAPGroup extends LDAPObject {
 	 * Get group users
 	 * @return List<String> users
 	 */
-	protected List<String> getUsers(){
+	List<String> getUsers(){
 		return users;
 	}
 }

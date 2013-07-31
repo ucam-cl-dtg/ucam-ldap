@@ -1,14 +1,12 @@
 package uk.ac.cam.cl.ldap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
@@ -16,8 +14,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apache.commons.codec.binary.Base64;
-
-import com.google.common.collect.ImmutableMap;
 
 
 /**
@@ -69,8 +65,9 @@ public class LDAPProvider {
 	/**
 	 * Sets up unique result query
 	 * @return NamingEnumeration<? extends Attribute>
+	 * @throws LDAPObjectNotFoundException 
 	 */	
-	private static Attributes setupUniqueQuery(String type, String parameter, String subtree){
+	private static Attributes setupUniqueQuery(String type, String parameter, String subtree) throws LDAPObjectNotFoundException{
 		SearchResult searchResult;
 		
 		try {
@@ -80,6 +77,8 @@ public class LDAPProvider {
 			
 		} catch (NamingException e) {
 			return null;
+		} catch (NullPointerException e) {
+			throw new LDAPObjectNotFoundException("User not found");
 		}
 		
 		return searchResult.getAttributes();
@@ -91,9 +90,13 @@ public class LDAPProvider {
 	 * Takes 2 arguments: attribute to search (eg. uid) and r to search with
 	 * @return LDAPUser
 	 */
-	protected static LDAPUser uniqueUserQuery(String type, String parameter) {
+	static LDAPUser uniqueUserQuery(String type, String parameter) throws LDAPObjectNotFoundException {
 		
 		Attributes userResult = setupUniqueQuery(type, parameter, "people");
+		
+		if(userResult==null){
+			throw new LDAPObjectNotFoundException("User not found");
+		}
 
 		return initLDAPUser(userResult);
 	}
@@ -102,7 +105,7 @@ public class LDAPProvider {
 	 * List of users Query
 	 * Returns a list of LDAPUser objects
 	 */
-	protected static ArrayList<LDAPUser> multipleUserQuery(String type, String parameter, boolean partial) {
+	static ArrayList<LDAPUser> multipleUserQuery(String type, String parameter, boolean partial) throws LDAPObjectNotFoundException {
 		
 		NamingEnumeration<SearchResult> searchResults = initialiseContext(type, parameter, "people", partial);
 		
@@ -123,10 +126,10 @@ public class LDAPProvider {
 	/**
 	 * Unique group query
 	 * Returns an LDAPGroup object
-	 * Takes 2 arguments: attribute to search (eg. uid) and r to search with
+	 * Takes 2 arguments: attribute to search (eg. uid) and parameter to search with
 	 * @return LDAPUser
 	 */
-	protected static LDAPGroup uniqueGroupQuery(String type, String parameter) {
+	static LDAPGroup uniqueGroupQuery(String type, String parameter) throws LDAPObjectNotFoundException {
 		
 		Attributes groupResult = setupUniqueQuery(type, parameter, "groups");
 
@@ -134,10 +137,34 @@ public class LDAPProvider {
 	}
 	
 	/**
+	 * Multiple group query
+	 * Returns a list of LDAPGroup objects
+	 * Takes 3 arguments: attribute to search (eg. uid), parameter to search with and whether partial
+	 * @return LDAPUser
+	 */
+	static List<LDAPGroup> uniqueGroupQuery(String type, String parameter, boolean partial) throws LDAPObjectNotFoundException {
+		
+		NamingEnumeration<SearchResult> searchResults = initialiseContext(type, parameter, "groups", partial);
+		
+		ArrayList<LDAPGroup> groups = new ArrayList<LDAPGroup>();
+		
+		try {
+			while(searchResults.hasMore()){
+				groups.add(initLDAPGroup(searchResults.next().getAttributes()));
+			}
+		} catch (NamingException e) {
+			return null;
+		}
+		
+		return groups;
+		
+	}
+	
+	/**
 	 * Creates an LDAPUser object from attributes
 	 * @return LDAPUser
 	 */
-	private static LDAPUser initLDAPUser(Attributes userResult) {
+	private static LDAPUser initLDAPUser(Attributes userResult) throws LDAPObjectNotFoundException {
 
 		String crsid;
 		String cn;
@@ -151,30 +178,22 @@ public class LDAPProvider {
 			// Get crisd
 			if(userResult.get("uid")!=null){
 			crsid = userResult.get("uid").get().toString();	
-			} else {
-				crsid = "none";
-			}
+			} else { crsid = null; }
 
 			if(userResult.get("cn")!=null){
-			// Get registered name
-			cn = userResult.get("cn").get().toString();
-			} else {
-				cn = "none";
-			}
+				// Get registered name
+				cn = userResult.get("cn").get().toString();
+			} else { cn = null;}
 			
 			if(userResult.get("sn")!=null){
-			// Get surname
-			sn = userResult.get("sn").get().toString();
-			} else {
-				sn = "none";
-			}
+				// Get surname
+				sn = userResult.get("sn").get().toString();
+			} else { sn = null;}
 			
 			if(userResult.get("mail")!=null){
-			// Get email
-			mail = userResult.get("mail").get().toString();
-			} else {
-				mail = "none";
-			}
+				// Get email
+				mail = userResult.get("mail").get().toString();
+			} else { mail = null;}
 		
 			// Get misAffiliation
 			NamingEnumeration<?> misAffEnum;
@@ -219,7 +238,7 @@ public class LDAPProvider {
 		}
 		
 		if(crsid==null){ // If uid is null the user does not exist
-			return null;
+			throw new LDAPObjectNotFoundException("User does not exist");
 		}
 		
 		return new LDAPUser(crsid, cn, sn, mail, misAff, institutions, photos);
@@ -230,7 +249,7 @@ public class LDAPProvider {
 	 * Creates an LDAPGroup object from attributes
 	 * @return LDAPGroup
 	 */
-	private static LDAPGroup initLDAPGroup(Attributes groupResult) {
+	private static LDAPGroup initLDAPGroup(Attributes groupResult) throws LDAPObjectNotFoundException{
 
 		String groupID;
 		String groupTitle;
@@ -240,89 +259,47 @@ public class LDAPProvider {
 		try {
 			
 			if(!groupResult.get("visibility").get().toString().equals("cam")){
-				//Group not visible, return null
+				throw new LDAPObjectNotFoundException("Group not publicly visible");
 			}
 			
+
+			if(groupResult.get("groupID")!=null){
 			// Get groupID
 			groupID = groupResult.get("groupID").get().toString();	
-			
+			} else { groupID = null; }
 		
+			if(groupResult.get("groupTitle")!=null){
 			// Get group name
 			groupTitle = groupResult.get("groupTitle").get().toString();
+			} else { groupTitle = null; }
 			
-		
+			if(groupResult.get("description")!=null){		
 			// Get description
 			description = groupResult.get("description").get().toString();
+			} else { description = null; }
 			
 		
 			// Get users
 			NamingEnumeration<?> usersEnum;
+			users = new ArrayList<String>();
+			
+			if(groupResult.get("uid")!=null){
 				 usersEnum = groupResult.get("uid").getAll();
-				 users = new ArrayList<String>();
-				 
 				 while(usersEnum.hasMore()){
 					 users.add(usersEnum.next().toString());
 				 }	  
-			 
+			}
+			
+			if(groupID==null){
+				throw new LDAPObjectNotFoundException("Group does not exist");
+			}
+			
 		} catch(NamingException e){
-			return null;
-		}
-		
-		if(groupID==null){ // If groupID is null the group does not exist
 			return null;
 		}
 		
 		return new LDAPGroup(groupID, groupTitle, description, users);
 
 	}
-
-//	/**
-//	 * Partial Group Query
-//	 * Constructs and calls final query, returning immutable map of crsid, displayname, surname
-//	 * Includes partial matches in search
-//	 * Takes 2 arguments: attribute to search (eg. uid) and, string x to match results with
-//	 * Possible subtrees to search: people, groups, institutions
-//	 * @return List<ImmutableMap<String,?>>
-//	 */
-//	public static List partialGroupQuery(String x, String type){
-//		
-//		System.out.println("Searching " + type + " for " + x);
-//		
-//		Hashtable env = setupQuery();
-//		NamingEnumeration<SearchResult> enumResults;
-//		
-//		Attributes a = null;
-//		try {
-//			DirContext ctx = new InitialDirContext(env);
-//			SearchControls controls = new SearchControls();
-//			controls.setReturningAttributes(new String[]{"groupID", "groupTitle", "description", "visibility"});
-//			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-//			enumResults = ctx.search(
-//					"ou=groups,o=University of Cambridge,dc=cam,dc=ac,dc=uk",
-//					"("+type+"=*" + x + "*)", controls);
-//		} catch (Exception e) {
-//			return null;
-//		}
-//		
-//		try {
-//			ArrayList<ImmutableMap<String,?>> groupMatches = new ArrayList<ImmutableMap<String,?>>();			
-//			
-//			// Convert enumeration type results to string
-//				while(enumResults.hasMore()){
-//					Attributes result = enumResults.next().getAttributes();
-//					// only add if members are public
-//					if(result.get("visibility").get().toString().equals("cam")){
-//						//dont add if the group is larger than 50 people
-//						groupMatches.add(ImmutableMap.of("id", result.get("groupID").get().toString(), "name", result.get("groupTitle").get().toString(), "description", result.get("description").get().toString()));
-//					} 
-//				}
-//				
-//			return groupMatches;
-//					
-//        } catch (NamingException e) {
-//			return null;
-//		} 
-//		
-//	}
 
 }

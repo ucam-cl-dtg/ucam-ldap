@@ -26,7 +26,7 @@ class LDAPGroupManager {
 				.softValues()
 				.build(
 						new CacheLoader<String, LDAPGroup>() {
-							public LDAPGroup load(String groupID){
+							public LDAPGroup load(String groupID)  throws LDAPObjectNotFoundException {
 								return LDAPProvider.uniqueGroupQuery("groupID", groupID);
 							}
 						});
@@ -35,16 +35,16 @@ class LDAPGroupManager {
 	/**
 	 * Gets LDAPGroup object from the map. Object will be added if it is not there
 	 */
-	protected LDAPGroup getGroupObject(String groupID){
+	LDAPGroup getGroupObject(String groupID) throws LDAPObjectNotFoundException {
 		LDAPGroup group;
 		try {
 			group = groupMap.get(groupID);
 		} catch (ExecutionException e) {
-			return null;
+			throw new LDAPObjectNotFoundException("Error getting group: " + e.getMessage());
 		}
 		
 		if(group==null){
-			// TODO: Throw group doesnt exist exception or something
+			throw new LDAPObjectNotFoundException("Error getting group");
 		}
 		
 		return group;
@@ -53,7 +53,7 @@ class LDAPGroupManager {
 	/**
 	 * Singleton method to get LDAPGroupManager 
 	 */	
-	protected static LDAPGroupManager getInstance(){
+	static LDAPGroupManager getInstance(){
 		if(gm==null){
 			gm = new LDAPGroupManager();
 		} 

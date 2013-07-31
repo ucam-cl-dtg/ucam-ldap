@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 public class LDAPQueryManager {
 	
 	// Get user data
-	public static String getUsercName(String crsid){
+	public static String getUsercName(String crsid) throws LDAPObjectNotFoundException {
 		
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
@@ -25,7 +25,7 @@ public class LDAPQueryManager {
 		
 		return u.getcName();
 	}
-	public static String getUserSurname(String crsid){
+	public static String getUserSurname(String crsid) throws LDAPObjectNotFoundException {
 		
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
@@ -34,7 +34,7 @@ public class LDAPQueryManager {
 		return u.getSurname();
 		
 	}
-	public static String getUserEmail(String crsid){
+	public static String getUserEmail(String crsid) throws LDAPObjectNotFoundException {
 
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
@@ -43,7 +43,7 @@ public class LDAPQueryManager {
 		return u.getEmail();
 		
 	}
-	public static String getUserStatus(String crsid){
+	public static String getUserStatus(String crsid) throws LDAPObjectNotFoundException {
 
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
@@ -59,7 +59,7 @@ public class LDAPQueryManager {
 		
 	}
 	
-	public static String getUserInstitution(String crsid){
+	public static String getUserInstitution(String crsid) throws LDAPObjectNotFoundException {
 
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
@@ -70,7 +70,7 @@ public class LDAPQueryManager {
 		return instList.get(0);		
 		
 	}
-	public static String getUserPhoto(String crsid){
+	public static String getUserPhoto(String crsid) throws LDAPObjectNotFoundException {
 
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
@@ -82,7 +82,7 @@ public class LDAPQueryManager {
 		
 	}
 	
-	public static List<String> getAllUserPhotos(String crsid){
+	public static List<String> getAllUserPhotos(String crsid) throws LDAPObjectNotFoundException {
 		
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
@@ -91,7 +91,7 @@ public class LDAPQueryManager {
 		return u.getPhotos();
 	}
 	
-	public static HashMap<String, String> getUserEssentials(String crsid){
+	public static HashMap<String, String> getUserEssentials(String crsid) throws LDAPObjectNotFoundException {
 
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
@@ -108,7 +108,7 @@ public class LDAPQueryManager {
 		
 	}	
 	
-	public static HashMap<String,?> getUserAll(String crsid){
+	public static HashMap<String,?> getUserAll(String crsid) throws LDAPObjectNotFoundException {
 		
 		LDAPUserManager um = LDAPUserManager.getInstance();
 		
@@ -129,7 +129,7 @@ public class LDAPQueryManager {
 	}	
 	
 	// Get group data
-	public static String getGroupName(String groupID){
+	public static String getGroupName(String groupID) throws LDAPObjectNotFoundException {
 		
 		LDAPGroupManager gm = LDAPGroupManager.getInstance();
 		
@@ -138,7 +138,7 @@ public class LDAPQueryManager {
 		return g.getName();
 		
 	}	
-	public static String getGroupDescription(String groupID){
+	public static String getGroupDescription(String groupID) throws LDAPObjectNotFoundException {
 		
 		LDAPGroupManager gm = LDAPGroupManager.getInstance();
 		
@@ -147,7 +147,7 @@ public class LDAPQueryManager {
 		return g.getDescription();
 		
 	}	
-	public static List<String> getGroupUsers(String groupID){
+	public static List<String> getGroupUsers(String groupID) throws LDAPObjectNotFoundException {
 
 		LDAPGroupManager gm = LDAPGroupManager.getInstance();
 		
@@ -156,7 +156,7 @@ public class LDAPQueryManager {
 		return g.getUsers();
 		
 	}	
-	public static HashMap<String, ?> getGroupEssentials(String groupID){
+	public static HashMap<String, ?> getGroupEssentials(String groupID) throws LDAPObjectNotFoundException {
 		
 		LDAPGroupManager gm = LDAPGroupManager.getInstance();
 		
@@ -174,7 +174,7 @@ public class LDAPQueryManager {
 	}	
 	
 	//Specific methods for autocomplete - for now cruedly passing in the session
-	public static List<HashMap<String, String>> partialUserQuery(HttpServletRequest r, String x){
+	public static List<HashMap<String, String>> partialUserQuery(HttpServletRequest r, String x) throws LDAPObjectNotFoundException {
 		
 		PartialQuery pq = (PartialQuery.getPartialQueryInstance(r));
 		List<LDAPUser> matches = pq.userQuery(x);

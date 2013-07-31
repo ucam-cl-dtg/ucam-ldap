@@ -28,8 +28,8 @@ class LDAPUserManager {
 				.weakKeys()
 				.softValues()
 				.build(
-						new CacheLoader<String, LDAPUser>() {
-							public LDAPUser load(String crsid){
+						new CacheLoader<String, LDAPUser>(){
+							public LDAPUser load(String crsid)  throws LDAPObjectNotFoundException {
 								return LDAPProvider.uniqueUserQuery("uid", crsid);
 							}
 						});
@@ -38,16 +38,16 @@ class LDAPUserManager {
 	/**
 	 * Gets LDAPUser object from the map. Object will be added if it is not there
 	 */
-	protected LDAPUser getUserObject(String crsid){
+	LDAPUser getUserObject(String crsid) throws LDAPObjectNotFoundException {
 		LDAPUser user;
 		try {
 			user = userMap.get(crsid);
 		} catch (ExecutionException e) {
-			return null;
+			throw new LDAPObjectNotFoundException("Error getting user: " + e.getMessage());
 		}
 		
 		if(user==null){
-			// Throw user doesnt exist exception
+			throw new LDAPObjectNotFoundException("Error getting user");
 		}
 		
 		return user;
@@ -56,7 +56,7 @@ class LDAPUserManager {
 	/**
 	 * Singleton method to get LDAPUserManager 
 	 */	
-	protected static LDAPUserManager getInstance(){
+	static LDAPUserManager getInstance(){
 		if(um==null){
 			um = new LDAPUserManager();
 		} 
