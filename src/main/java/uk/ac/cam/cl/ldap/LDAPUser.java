@@ -41,6 +41,14 @@ public class LDAPUser {
 	}
 	
 	/**
+	 * Get users crsid 
+	 * @return String crsid
+	 */
+	protected String getCRSID(){
+			return crsid;
+	}
+	
+	/**
 	 * Get users display name 
 	 * @return String displayName
 	 */

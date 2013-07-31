@@ -1,10 +1,9 @@
 package uk.ac.cam.cl.ldap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.common.collect.ImmutableMap;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 
@@ -56,9 +55,15 @@ public class LDAPQueryManager {
 		return LDAPQueryHelper.getGroupAll(groupID);
 	}	
 	
-	//Specific methods for autocomplete - do these use the user manager?
-//	public static HashMap tokenQueryUserByCRSID(String x, int minChars){
-//		return new HashMap<String, ?>();
-//	}
+	//Specific methods for autocomplete - for now cruedly passing in the session and iterating user objects here
+	public static void partialQuery(HttpServletRequest r, String x){
+		PartialQuery pq = (PartialQuery.getPartialQueryInstance(r));
+		List<LDAPUser> matches = pq.userQuery(x);
+		System.out.println("Partial query for: " + x);
+		for(LDAPUser u : matches) {
+			System.out.print(u.getCRSID() + ", ");
+		}
+		System.out.println();
+	}
 
 }

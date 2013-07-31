@@ -149,45 +149,70 @@ public class LDAPProvider {
 
 		try {
 			// Get crisd
+			if(userResult.get("uid")!=null){
 			crsid = userResult.get("uid").get().toString();	
-		
+			} else {
+				crsid = "none";
+			}
+
+			if(userResult.get("cn")!=null){
 			// Get registered name
 			cn = userResult.get("cn").get().toString();
-		
+			} else {
+				cn = "none";
+			}
+			
+			if(userResult.get("sn")!=null){
 			// Get surname
 			sn = userResult.get("sn").get().toString();
-		
+			} else {
+				sn = "none";
+			}
+			
+			if(userResult.get("mail")!=null){
 			// Get email
 			mail = userResult.get("mail").get().toString();
+			} else {
+				mail = "none";
+			}
 		
 			// Get misAffiliation
 			NamingEnumeration<?> misAffEnum;
+			misAff = new ArrayList<String>();
+			
+			if(userResult.get("misAffiliation")!=null){
 				 misAffEnum = userResult.get("misAffiliation").getAll();
-				 misAff = new ArrayList<String>();
 				 
 				 while(misAffEnum.hasMore()){
 					 misAff.add(misAffEnum.next().toString());
 				 }	 
+			}
 			
 			// Get institutions
 			NamingEnumeration<?> instEnum;
+			institutions = new ArrayList<String>();
+			
+			if(userResult.get("ou")!=null){
 				 instEnum = userResult.get("ou").getAll();
-				 institutions = new ArrayList<String>();
-				 
+
 				 while(instEnum.hasMore()){
 					 institutions.add(instEnum.next().toString());
 				 }	 
+			}
 	
 			// Get photos
 			NamingEnumeration<?> photoEnum;
-	
-				 photoEnum = userResult.get("jpegPhoto").getAll();
-				 photos = new ArrayList<String>();
-				 
-				 while(photoEnum.hasMore()){
-						byte[] p = (byte[])photoEnum.next();
-						photos.add(new String(Base64.encodeBase64(p)));	
-				 }	 
+			photos = new ArrayList<String>();
+			
+				if(userResult.get("jpegPhoto")!=null){
+					photoEnum = userResult.get("jpegPhoto").getAll();
+					
+					 while(photoEnum.hasMore()){
+							byte[] p = (byte[])photoEnum.next();
+							photos.add(new String(Base64.encodeBase64(p)));	
+					 }	 
+				} 
+
 			 
 		} catch(NamingException e){
 			return null;
@@ -238,8 +263,6 @@ public class LDAPProvider {
 				 while(usersEnum.hasMore()){
 					 users.add(usersEnum.next().toString());
 				 }	  
-				 
-				 System.out.println("Problem not with users");
 			 
 		} catch(NamingException e){
 			return null;
