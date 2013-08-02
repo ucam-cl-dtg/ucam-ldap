@@ -1,34 +1,42 @@
 package uk.ac.cam.cl.ldap;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class PartialQuery {
 	
 	/** Name of the session attribute containing the user PartialQuery object **/
 	public static String ATTR_PARTIAL_QUERY = "UserPartialQuery";
 	
-	/** Trie holding cached matches **/
-	private LDAPTrie<LDAPUser> userMatches;
+	/** Tries holding cached matches **/
+	private static LDAPTrie<LDAPUser> userCrsidMatches;
+	private static LDAPTrie<LDAPUser> userNameMatches;
+	private static LDAPTrie<LDAPGroup> groupNameMatches;
 	
 	private PartialQuery(){
-		userMatches = new LDAPTrie<LDAPUser>();
+		
 	}
 	
-	List<LDAPUser> userQuery(String x) throws LDAPObjectNotFoundException {
-		return userMatches.getMatches(x);
-	}
-	
-	static PartialQuery getPartialQueryInstance(HttpServletRequest req){
-		PartialQuery sessionPQ = (PartialQuery)req.getSession().getAttribute(ATTR_PARTIAL_QUERY);
-		if(sessionPQ!=null){
-			return sessionPQ;
-		} else {
-
-			req.getSession().setAttribute(ATTR_PARTIAL_QUERY, new PartialQuery());
-			return (PartialQuery)req.getSession().getAttribute(ATTR_PARTIAL_QUERY);
+	static LDAPTrie<LDAPUser> getUserCrsidInstance(){
+		
+		if(userCrsidMatches==null){
+			userCrsidMatches = new LDAPTrie<LDAPUser>();
 		}
+		return userCrsidMatches;
+	}
+	
+	static LDAPTrie<LDAPUser> getUserNameInstance(){
+		
+		if(userNameMatches==null){
+			userNameMatches = new LDAPTrie<LDAPUser>();
+		}
+		return userNameMatches;
+	}
+	
+	static LDAPTrie<LDAPGroup> getGroupNameInstance(){
+		
+		if(groupNameMatches==null){
+			groupNameMatches = new LDAPTrie<LDAPGroup>();
+		}
+		return groupNameMatches;
 	}
 	
 }

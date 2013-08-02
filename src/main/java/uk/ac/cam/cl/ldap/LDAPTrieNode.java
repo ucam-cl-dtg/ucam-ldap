@@ -1,8 +1,8 @@
 package uk.ac.cam.cl.ldap;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /** Trie ADT Node class **/
 class LDAPTrieNode<T> {
@@ -11,7 +11,7 @@ class LDAPTrieNode<T> {
 	
 	private T data;
 	
-	Map<Character, LDAPTrieNode<T>> children = new HashMap<Character, LDAPTrieNode<T>>();
+	Map<Character, LDAPTrieNode<T>> children = new WeakHashMap<Character, LDAPTrieNode<T>>();
 	
 	LDAPTrieNode(char c){
 		this.c = c;

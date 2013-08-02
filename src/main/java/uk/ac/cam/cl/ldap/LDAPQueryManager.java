@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * 
  * @author      Holly Priest <hp343@cam.ac.uk>
@@ -174,14 +172,16 @@ public class LDAPQueryManager {
 	}	
 	
 	//Specific methods for autocomplete - for now cruedly passing in the session
-	public static List<HashMap<String, String>> partialUserQuery(HttpServletRequest r, String x) throws LDAPObjectNotFoundException {
+	public static List<HashMap<String, String>> partialUserQuery(String x) throws LDAPObjectNotFoundException {
 		
-		PartialQuery pq = (PartialQuery.getPartialQueryInstance(r));
-		List<LDAPUser> matches = pq.userQuery(x);
+		List<HashMap<String,String>> users = new ArrayList<HashMap<String,String>>();
 		
-		List<HashMap<String, String>> users = new ArrayList<HashMap<String, String>>();
+		LDAPTrie<LDAPUser> userCrsidTrie = PartialQuery.getUserCrsidInstance();
+		
+		List<LDAPUser> matches = userCrsidTrie.getMatches(x);
 		
 		for(LDAPUser u : matches){
+			System.out.println(u.getcName());
 			users.add(u.getEssentials());
 		}
 		

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 
 class LDAPTrie<T extends LDAPObject> {
@@ -11,7 +12,7 @@ class LDAPTrie<T extends LDAPObject> {
 	private Map<Character, LDAPTrieNode<T>> roots;
 	
 	LDAPTrie() {
-		roots = new HashMap<Character, LDAPTrieNode<T>>();
+		roots = new WeakHashMap<Character, LDAPTrieNode<T>>();
 	}
 	
 	LDAPTrie(List<T> initMatches){
@@ -54,11 +55,14 @@ class LDAPTrie<T extends LDAPObject> {
 	
 	List<T> getMatches(String x) throws LDAPObjectNotFoundException {
 		
+		System.out.println("getting matches for " + x);
+		
 		char[] chars = x.toCharArray();
 		
 		LDAPTrieNode<T> currentNode = null;
 		
 		if(!roots.containsKey(chars[0])){
+			System.out.println("[LDAP QUERY] for " + x);
 			addMatches((List<T>)LDAPProvider.multipleUserQuery("uid", x, true));
 		}
 		
@@ -68,6 +72,7 @@ class LDAPTrie<T extends LDAPObject> {
 		
 		for(int i=1; i<chars.length; i++){
 			if(!currentNode.children.containsKey(chars[i])){ // no more stored matches, need to get more from LDAP
+				System.out.println("[LDAP QUERY] for " + x);
 				List<T> newMatches = (List<T>) LDAPProvider.multipleUserQuery("uid", x.substring(0, i+1), true);
 				addMatches(newMatches);
 			} else {
