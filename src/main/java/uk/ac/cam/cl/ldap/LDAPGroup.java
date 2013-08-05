@@ -31,7 +31,6 @@ public class LDAPGroup extends LDAPObject {
 		this.groupTitle = ifNull(groupTitle,"Unknown group");
 		this.description = ifNull(description,"No description");
 		this.users = ifNull(users,new ArrayList<String>());	
-		
 	}
 	
 	/**
@@ -47,6 +46,7 @@ public class LDAPGroup extends LDAPObject {
 	 * Get group name
 	 * @return String groupTitle
 	 */
+	@Override
 	String getName(){
 			return groupTitle;
 	}
@@ -60,7 +60,7 @@ public class LDAPGroup extends LDAPObject {
 	}
 	
 	/**
-	 * Get group users
+	 * Get group users 
 	 * @return List<String> users
 	 */
 	List<String> getUsers(){

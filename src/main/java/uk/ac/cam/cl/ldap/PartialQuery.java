@@ -18,7 +18,7 @@ public class PartialQuery {
 	static LDAPTrie<LDAPUser> getUserCrsidInstance(){
 		
 		if(userCrsidMatches==null){
-			userCrsidMatches = new LDAPTrie<LDAPUser>();
+			userCrsidMatches = new LDAPTrie<LDAPUser>("user", "uid");
 		}
 		return userCrsidMatches;
 	}
@@ -26,7 +26,7 @@ public class PartialQuery {
 	static LDAPTrie<LDAPUser> getUserNameInstance(){
 		
 		if(userNameMatches==null){
-			userNameMatches = new LDAPTrie<LDAPUser>();
+			userNameMatches = new LDAPTrie<LDAPUser>("user", "sn");
 		}
 		return userNameMatches;
 	}
@@ -34,7 +34,7 @@ public class PartialQuery {
 	static LDAPTrie<LDAPGroup> getGroupNameInstance(){
 		
 		if(groupNameMatches==null){
-			groupNameMatches = new LDAPTrie<LDAPGroup>();
+			groupNameMatches = new LDAPTrie<LDAPGroup>("group", "groupTitle");
 		}
 		return groupNameMatches;
 	}

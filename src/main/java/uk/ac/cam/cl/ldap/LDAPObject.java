@@ -11,6 +11,8 @@ public abstract class LDAPObject {
 	}
 
 	abstract String getID();
+	
+	abstract String getName();
 
 	public LDAPObject() {
 		

@@ -142,15 +142,23 @@ public class LDAPProvider {
 	 * Takes 3 arguments: attribute to search (eg. uid), parameter to search with and whether partial
 	 * @return LDAPUser
 	 */
-	static List<LDAPGroup> uniqueGroupQuery(String type, String parameter, boolean partial) throws LDAPObjectNotFoundException {
+	static List<LDAPGroup> multipleGroupQuery(String type, String parameter, boolean partial) throws LDAPObjectNotFoundException {
 		
 		NamingEnumeration<SearchResult> searchResults = initialiseContext(type, parameter, "groups", partial);
 		
 		ArrayList<LDAPGroup> groups = new ArrayList<LDAPGroup>();
 		
+		
 		try {
 			while(searchResults.hasMore()){
-				groups.add(initLDAPGroup(searchResults.next().getAttributes()));
+				System.out.println("more results");
+				try {
+					LDAPGroup g = initLDAPGroup(searchResults.next().getAttributes());
+					groups.add(g);
+				} catch (LDAPObjectNotFoundException e){
+					// don't add the group to the list
+					//log.debug(e.getMessage);
+				}
 			}
 		} catch (NamingException e) {
 			return null;
@@ -259,9 +267,9 @@ public class LDAPProvider {
 		try {
 			
 			if(!groupResult.get("visibility").get().toString().equals("cam")){
+				System.out.println("Group not visible");
 				throw new LDAPObjectNotFoundException("Group not publicly visible");
 			}
-			
 
 			if(groupResult.get("groupID")!=null){
 			// Get groupID
@@ -271,7 +279,9 @@ public class LDAPProvider {
 			if(groupResult.get("groupTitle")!=null){
 			// Get group name
 			groupTitle = groupResult.get("groupTitle").get().toString();
+			System.out.println(groupTitle);
 			} else { groupTitle = null; }
+			
 			
 			if(groupResult.get("description")!=null){		
 			// Get description

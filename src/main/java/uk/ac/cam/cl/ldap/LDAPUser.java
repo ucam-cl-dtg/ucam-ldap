@@ -53,6 +53,15 @@ public class LDAPUser extends LDAPObject {
 	}
 	
 	/**
+	 * Get surname for trie matching
+	 * @return String surname
+	 */
+	@Override
+	String getName(){
+			return surname;
+	}
+	
+	/**
 	 * Get users display name 
 	 * @return String displayName
 	 */
