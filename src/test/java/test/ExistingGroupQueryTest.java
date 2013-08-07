@@ -3,13 +3,13 @@ package test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
 
-import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
+import uk.ac.cam.cl.ldap.LDAPGroup;
 import uk.ac.cam.cl.ldap.LDAPQueryManager;
+import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
 
 public class ExistingGroupQueryTest {
 	
@@ -22,7 +22,11 @@ public class ExistingGroupQueryTest {
 		// get name
 		String name = null;
 		try {
-			name = LDAPQueryManager.getGroupName(id);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPGroup g = qm.getGroup(id);
+			
+			name = g.getName();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -37,7 +41,11 @@ public class ExistingGroupQueryTest {
 		// get surname
 		String description = null;
 		try {
-			description = LDAPQueryManager.getGroupDescription(id);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPGroup g = qm.getGroup(id);
+			
+			description = g.getDescription();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -52,7 +60,11 @@ public class ExistingGroupQueryTest {
 		// get users
 		List<String> users = null;
 		try {
-			users = LDAPQueryManager.getGroupUsers(id);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPGroup g = qm.getGroup(id);
+			
+			users = g.getUsers();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -62,20 +74,6 @@ public class ExistingGroupQueryTest {
 			System.out.print(u+",");
 		}
 		System.out.println();
-		
-	}
-	
-	@Test
-	public void getEssentials () {
-		
-		// get group essentials
-		HashMap<String,?> essentials = null;
-		try {
-			 essentials = LDAPQueryManager.getGroupEssentials(id);
-		} catch (LDAPObjectNotFoundException e) {
-			fail(e.getMessage());
-		}
-		assertNotNull(essentials);
 		
 	}
 

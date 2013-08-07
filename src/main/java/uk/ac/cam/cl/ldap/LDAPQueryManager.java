@@ -1,221 +1,98 @@
 package uk.ac.cam.cl.ldap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
- * 
- * @author      Holly Priest <hp343@cam.ac.uk>
- * @version     1                
- * This class will provide all the public methods to get information from LDAP
- * This is the only class with public methods, all LDAP queries should be done through this class
+ * A singleton class containing a map of crsid to LDAPUser and of groupID to LDAPGroup
+ * object. Caches the object with it's data. Supports concurrent access.
  * 
  */
 public class LDAPQueryManager {
 	
-	// User queries
-	public static String getUsercName(String crsid) throws LDAPObjectNotFoundException {
+	/** Singleton instance of LDAPGroupManager */
+	private static LDAPQueryManager om;
+	
+	private LoadingCache<String, LDAPUser> userMap;
+	private LoadingCache<String, LDAPGroup> groupMap;
+	
+	/**
+	 * Gets LDAPUser object from cache. Object will be added if it is not cached
+	 */
+	public static LDAPUser getUser(String crsid) throws LDAPObjectNotFoundException {
 		
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
+		LDAPQueryManager qm = LDAPQueryManager.getInstance();
 		
-		LDAPUser u = om.getUser(crsid);
+		LDAPUser user;
+		try {
+			user = qm.userMap.get(crsid);
+		} catch (ExecutionException e) {
+			throw new LDAPObjectNotFoundException("Error getting user: " + e.getMessage());
+		}
 		
-		return u.getcName();
+		if(user==null){
+			throw new LDAPObjectNotFoundException("Unable to retrieve user from cache or otherwise");
+		}
+		
+		return user;
 	}
-	public static String getUserSurname(String crsid) throws LDAPObjectNotFoundException {
+	
+	/**
+	 * Gets LDAPGroup object from cache. Object will be added if it is not cached
+	 */
+	public static LDAPGroup getGroup(String groupID) throws LDAPObjectNotFoundException {
 		
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
+		LDAPQueryManager qm = LDAPQueryManager.getInstance();
 		
-		LDAPUser u = om.getUser(crsid);
+		LDAPGroup group;
+		try {
+			group = qm.groupMap.get(groupID);
+		} catch (ExecutionException e) {
+			throw new LDAPObjectNotFoundException("Error getting group: " + e.getMessage());
+		}
 		
-		return u.getSurname();
+		if(group==null){
+			throw new LDAPObjectNotFoundException("Unable to retrieve group from cache or otherwise");
+		}
 		
+		return group;
 	}
-	public static String getUserEmail(String crsid) throws LDAPObjectNotFoundException {
-
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPUser u = om.getUser(crsid);
-		
-		return u.getEmail();
-		
+	
+	private LDAPQueryManager(){
+		// Create a user cache with soft keys
+		userMap = CacheBuilder.newBuilder()
+				.maximumSize(500)
+				.weakKeys()
+				.softValues()
+				.build(
+						new CacheLoader<String, LDAPUser>(){
+							public LDAPUser load(String crsid)  throws LDAPObjectNotFoundException {
+								return LDAPProvider.uniqueUserQuery("uid", crsid);
+							}
+						});
+		// Create a group cache with soft keys
+		groupMap = CacheBuilder.newBuilder()
+				.maximumSize(500)
+				.weakKeys()
+				.softValues()
+				.build(
+						new CacheLoader<String, LDAPGroup>() {
+							public LDAPGroup load(String groupID)  throws LDAPObjectNotFoundException {
+								return LDAPProvider.uniqueGroupQuery("groupID", groupID);
+							}
+						});
 	}
-	public static String getUserStatus(String crsid) throws LDAPObjectNotFoundException {
-
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPUser u = om.getUser(crsid);
-		
-		List<String> statusList = u.getStatus();
-		
-		if(statusList.contains("Staff")){
-			return "staff";
+	
+	/**
+	 * Singleton method to get LDAPGroupManager 
+	 */	
+	public static LDAPQueryManager getInstance(){
+		if(om==null){
+			om = new LDAPQueryManager();
 		} 
-		
-		return "student";
-		
+		return om;
 	}
-	
-	public static String getUserInstitution(String crsid) throws LDAPObjectNotFoundException {
-
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPUser u = om.getUser(crsid);
-		
-		List<String> instList = u.getInstitutions();
-		
-		return instList.get(0);		
-		
-	}
-	public static String getUserPhoto(String crsid) throws LDAPObjectNotFoundException {
-
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPUser u = om.getUser(crsid);
-		
-		List<String> photos = u.getPhotos();
-		
-		return photos.get(0);
-		
-	}
-	
-	public static List<String> getAllUserPhotos(String crsid) throws LDAPObjectNotFoundException {
-		
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPUser u = om.getUser(crsid);
-		
-		return u.getPhotos();
-	}
-	
-	public static HashMap<String, String> getUserEssentials(String crsid) throws LDAPObjectNotFoundException {
-
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPUser u = om.getUser(crsid);
-		
-		HashMap<String, String> data = new HashMap<String, String>();
-		
-		data.put("crsid", crsid);
-		data.put("cName", u.getcName());
-		data.put("surname", u.getSurname());
-		data.put("email", u.getEmail());
-		
-		return data;
-		
-	}	
-	
-	public static HashMap<String,?> getUserAll(String crsid) throws LDAPObjectNotFoundException {
-		
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPUser u = om.getUser(crsid);
-		
-		HashMap<String, Object> data = new HashMap<String, Object>();
-		
-		data.put("crsid", crsid);
-		data.put("cName", u.getcName());
-		data.put("surname", u.getSurname());
-		data.put("email", u.getEmail());
-		data.put("institutions", u.getInstitutions());
-		data.put("photos", u.getPhotos());
-		data.put("status", u.getStatus());
-		
-		return data;
-		
-	}	
-	
-	// Group queries
-	public static String getGroupName(String groupID) throws LDAPObjectNotFoundException {
-		
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPGroup g = om.getGroup(groupID);
-		
-		return g.getName();
-		
-	}	
-	public static String getGroupDescription(String groupID) throws LDAPObjectNotFoundException {
-		
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPGroup g = om.getGroup(groupID);
-		
-		return g.getDescription();
-		
-	}	
-	public static List<String> getGroupUsers(String groupID) throws LDAPObjectNotFoundException {
-
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPGroup g = om.getGroup(groupID);
-		
-		return g.getUsers();
-		
-	}	
-	public static HashMap<String, ?> getGroupEssentials(String groupID) throws LDAPObjectNotFoundException {
-		
-		LDAPObjectManager om = LDAPObjectManager.getInstance();
-		
-		LDAPGroup g = om.getGroup(groupID);
-		
-		HashMap<String, Object> data = new HashMap<String, Object>();
-		
-		data.put("groupID", groupID);
-		data.put("name", g.getName());
-		data.put("description", g.getDescription());
-		data.put("users", g.getUsers());
-		
-		return data;
-		
-	}	
-	
-	// Autocomplete queries
-	public static List<HashMap<String, String>> partialUserByCrsid(String x) throws LDAPObjectNotFoundException {
-		
-		List<HashMap<String,String>> users = new ArrayList<HashMap<String,String>>();
-		
-		LDAPTrie<LDAPUser> userCrsidTrie = PartialQuery.getUserCrsidInstance();
-		
-		List<LDAPUser> matches = userCrsidTrie.getMatches(x);
-		
-		for(LDAPUser u : matches){
-			System.out.println(u.getcName());
-			users.add(u.getEssentials());
-		}
-		
-		return users;
-	}
-	public static List<HashMap<String, String>> partialUserBySurname(String x) throws LDAPObjectNotFoundException {
-		
-		List<HashMap<String,String>> users = new ArrayList<HashMap<String,String>>();
-		
-		LDAPTrie<LDAPUser> userSurnameTrie = PartialQuery.getUserNameInstance();
-		
-		List<LDAPUser> matches = userSurnameTrie.getMatches(x);
-		
-		for(LDAPUser u : matches){
-			System.out.println(u.getcName());
-			users.add(u.getEssentials());
-		}
-		
-		return users;
-	}
-	public static List<HashMap<String, String>> partialGroupByName(String x) throws LDAPObjectNotFoundException {
-		
-		List<HashMap<String,String>> users = new ArrayList<HashMap<String,String>>();
-		
-		LDAPTrie<LDAPGroup> groupNameTrie = PartialQuery.getGroupNameInstance();
-		
-		List<LDAPGroup> matches = groupNameTrie.getMatches(x);
-		
-		for(LDAPGroup u : matches){
-			System.out.println(u.getName());
-			//users.add(u.getName());
-		}
-		
-		return users;
-	}
-
 }

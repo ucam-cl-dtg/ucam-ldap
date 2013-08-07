@@ -48,7 +48,7 @@ public class LDAPUser extends LDAPObject {
 	 * @return String crsid
 	 */
 	@Override
-	String getID(){
+	public String getID(){
 			return crsid;
 	}
 	
@@ -65,7 +65,7 @@ public class LDAPUser extends LDAPObject {
 	 * Get users display name 
 	 * @return String displayName
 	 */
-	String getcName(){
+	public String getcName(){
 			return cName;
 	}
 	
@@ -73,7 +73,7 @@ public class LDAPUser extends LDAPObject {
 	 * Get users surname
 	 * @return String surname
 	 */
-	String getSurname(){
+	public String getSurname(){
 			return surname;
 	}
 	
@@ -81,7 +81,7 @@ public class LDAPUser extends LDAPObject {
 	 * Get users email
 	 * @return String email
 	 */
-	String getEmail(){
+	public String getEmail(){
 		return email;
 	}
 	
@@ -89,7 +89,7 @@ public class LDAPUser extends LDAPObject {
 	 * Gets a list of institutions associated with user
 	 * @return String status
 	 */
-	List<String> getInstitutions(){
+	public List<String> getInstitutions(){
 		return institutions;
 	}
 
@@ -98,7 +98,7 @@ public class LDAPUser extends LDAPObject {
 	 * If 'staff' misAffiliations user is present sets status as staff, otherwise student
 	 * @return String status
 	 */
-	List<String> getStatus(){
+	public List<String> getStatus(){
 		return status;
 	}
 	
@@ -107,7 +107,7 @@ public class LDAPUser extends LDAPObject {
 	 * To display in soy template, use  <img src="data:image/jpeg;base64,{$user.photo}" /> or similar
 	 * @return String photo
 	 */
-	List<String> getPhotos(){
+	public List<String> getPhotos(){
 		return photos;
 	}	
 	
@@ -115,17 +115,36 @@ public class LDAPUser extends LDAPObject {
 	 * Gets cName, surname, email
 	 * @return HashMap
 	 */
-	HashMap<String, String> getEssentials(){
+	public HashMap<String, String> getEssentials(){
 		
 		HashMap<String, String> data = new HashMap<String, String>();
 		
 		data.put("crsid", crsid);
-		data.put("cName", cName);
+		data.put("name", cName);
 		data.put("surname", surname);
 		data.put("email", email);
 		
 		return data;
 	}	
+	
+	/**
+	 * Gets cName, surname, email
+	 * @return HashMap
+	 */
+	public HashMap<String, String> getAll(){
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		
+		data.put("crsid", crsid);
+		data.put("name", cName);
+		data.put("surname", surname);
+		data.put("email", email);
+		data.put("institution", institutions.get(0));
+		data.put("status", status.get(0));
+		data.put("photo", photos.get(0));
+		
+		return data;
+	}
 	
 	
 }

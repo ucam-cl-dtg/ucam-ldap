@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.ldap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public class LDAPGroup extends LDAPObject {
 	 * @return String groupID
 	 */
 	@Override
-	protected String getID(){
+	public String getID(){
 			return groupID;
 	}
 	
@@ -47,7 +48,7 @@ public class LDAPGroup extends LDAPObject {
 	 * @return String groupTitle
 	 */
 	@Override
-	String getName(){
+	public String getName(){
 			return groupTitle;
 	}
 	
@@ -55,7 +56,7 @@ public class LDAPGroup extends LDAPObject {
 	 * Get group description
 	 * @return String description
 	 */
-	String getDescription(){
+	public String getDescription(){
 			return description;
 	}
 	
@@ -63,7 +64,22 @@ public class LDAPGroup extends LDAPObject {
 	 * Get group users 
 	 * @return List<String> users
 	 */
-	List<String> getUsers(){
+	public List<String> getUsers(){
 		return users;
 	}
+	
+	/**
+	 * Gets id, group name, description
+	 * @return HashMap
+	 */
+	public HashMap<String, String> getEssentials(){
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		
+		data.put("id", groupID);
+		data.put("name", groupTitle);
+		data.put("description", description);
+		
+		return data;
+	}	
 }

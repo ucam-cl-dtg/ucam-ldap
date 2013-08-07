@@ -5,8 +5,9 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
 import uk.ac.cam.cl.ldap.LDAPQueryManager;
+import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
+import uk.ac.cam.cl.ldap.LDAPUser;
 
 public class NullUserQueryTest {
 
@@ -18,7 +19,11 @@ public class NullUserQueryTest {
 		
 		// get cName
 		try {
-			LDAPQueryManager.getUsercName(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			u.getcName();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));			
@@ -31,7 +36,11 @@ public class NullUserQueryTest {
 		
 		// get surname
 		try {
-			LDAPQueryManager.getUserSurname(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			u.getSurname();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));
@@ -44,7 +53,11 @@ public class NullUserQueryTest {
 		
 		// get email
 		try {
-			LDAPQueryManager.getUserEmail(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			u.getEmail();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));
@@ -57,7 +70,11 @@ public class NullUserQueryTest {
 		
 		// get status
 		try {
-			LDAPQueryManager.getUserStatus(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			u.getStatus();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));
@@ -70,7 +87,11 @@ public class NullUserQueryTest {
 		
 		// get primary institution
 		try {
-			LDAPQueryManager.getUserInstitution(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			u.getInstitutions();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));
@@ -83,7 +104,11 @@ public class NullUserQueryTest {
 		
 		// get primary photo
 		try {
-			LDAPQueryManager.getUserPhoto(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			u.getPhotos();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));
@@ -96,24 +121,16 @@ public class NullUserQueryTest {
 		
 		// get essentials
 		try {
-			LDAPQueryManager.getUserEssentials(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			u.getEssentials();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));
 		}
 		
 	}
-	
-	@Test
-	public void getAll() {
-		
-		// get all
-		try {
-			LDAPQueryManager.getUserAll(crsid);
-			fail("Did not throw exception");
-		} catch (LDAPObjectNotFoundException e) {
-			assertTrue((e instanceof LDAPObjectNotFoundException));
-		}
-		
-	}
+
 }

@@ -5,8 +5,9 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
+import uk.ac.cam.cl.ldap.LDAPGroup;
 import uk.ac.cam.cl.ldap.LDAPQueryManager;
+import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
 
 public class NullGroupQueryTest {
 
@@ -18,7 +19,11 @@ public class NullGroupQueryTest {
 		
 		// get groupname
 		try {
-			LDAPQueryManager.getGroupName(id);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPGroup g = qm.getGroup(id);
+			
+			g.getName();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));			
@@ -31,7 +36,11 @@ public class NullGroupQueryTest {
 		
 		// get surname
 		try {
-			LDAPQueryManager.getGroupDescription(id);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPGroup g = qm.getGroup(id);
+			
+			g.getDescription();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));
@@ -44,7 +53,11 @@ public class NullGroupQueryTest {
 		
 		// get email
 		try {
-			LDAPQueryManager.getGroupUsers(id);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPGroup g = qm.getGroup(id);
+			
+			g.getUsers();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));
@@ -52,17 +65,6 @@ public class NullGroupQueryTest {
 	
 	} 
 	
-	@Test
-	public void getEssentials() {
-		
-		// get essentials
-		try {
-			LDAPQueryManager.getGroupEssentials(id);
-			fail("Did not throw exception");
-		} catch (LDAPObjectNotFoundException e) {
-			assertTrue((e instanceof LDAPObjectNotFoundException));
-		}
-		
-	}
+
 
 }

@@ -4,11 +4,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Test;
 
-import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
 import uk.ac.cam.cl.ldap.LDAPQueryManager;
+import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
+import uk.ac.cam.cl.ldap.LDAPUser;
 
 public class ExistingUserQueryTest {
 	
@@ -21,7 +23,11 @@ public class ExistingUserQueryTest {
 		// get cName
 		String cName = null;
 		try {
-			cName = LDAPQueryManager.getUsercName(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			cName = u.getcName();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -36,7 +42,11 @@ public class ExistingUserQueryTest {
 		// get surname
 		String surname = null;
 		try {
-			surname = LDAPQueryManager.getUserSurname(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			surname = u.getSurname();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -51,7 +61,11 @@ public class ExistingUserQueryTest {
 		// get email
 		String email = null;
 		try {
-			email = LDAPQueryManager.getUserEmail(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			email = u.getEmail();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -64,14 +78,18 @@ public class ExistingUserQueryTest {
 	public void getStatus () {
 		
 		// get status
-		String status = null;
+		List<String> status = null;
 		try {
-			status = LDAPQueryManager.getUserStatus(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			status = u.getStatus();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
 		assertNotNull(status);
-		System.out.println("Status: " +status);
+		System.out.println("Status: " +status.get(0));
 		
 	}
 	
@@ -79,14 +97,18 @@ public class ExistingUserQueryTest {
 	public void getInstitution () {
 		
 		// get primary institution
-		String primaryInst = null;
+		List<String> primaryInst = null;
 		try {
-			primaryInst = LDAPQueryManager.getUserInstitution(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			primaryInst = u.getInstitutions();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
 		assertNotNull(primaryInst);
-		System.out.println("Primary Institution: " +primaryInst);
+		System.out.println("Primary Institution: " +primaryInst.get(0));
 		
 	}
 	
@@ -94,9 +116,13 @@ public class ExistingUserQueryTest {
 	public void getPhoto () {
 		
 		// get primary photo
-		String primaryPhoto = null;
+		List<String> primaryPhoto = null;
 		try {
-			primaryPhoto = LDAPQueryManager.getUserPhoto(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			primaryPhoto = u.getPhotos();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -110,7 +136,11 @@ public class ExistingUserQueryTest {
 		// get user essentials
 		HashMap<String,String> essentials = null;
 		try {
-			 essentials = LDAPQueryManager.getUserEssentials(crsid);
+			LDAPQueryManager qm = LDAPQueryManager.getInstance();
+			
+			LDAPUser u = qm.getUser(crsid);
+			
+			essentials = u.getEssentials();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -118,17 +148,4 @@ public class ExistingUserQueryTest {
 		
 	}
 	
-	@Test
-	public void getAll () {
-		
-		// get user all
-		HashMap<String,String> all = null;
-		try {
-			 all = LDAPQueryManager.getUserEssentials(crsid);
-		} catch (LDAPObjectNotFoundException e) {
-			fail(e.getMessage());
-		}
-		assertNotNull(all);
-		
-	}
 }
