@@ -4,12 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * 
- * @author      Holly Priest <hp343@cam.ac.uk>
- * @version     1                
- * This class will provide all the information on a user, cached from LDAP
- * 
+/**         
+ * A class containing all data for a particular LDAP queried user
  */
 public class LDAPUser extends LDAPObject {
 	
@@ -62,8 +58,8 @@ public class LDAPUser extends LDAPObject {
 	}
 	
 	/**
-	 * Get users display name 
-	 * @return String displayName
+	 * Get users registered name 
+	 * @return String registered name
 	 */
 	public String getcName(){
 			return cName;

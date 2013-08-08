@@ -7,20 +7,26 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 /**
- * A singleton class containing a map of crsid to LDAPUser and of groupID to LDAPGroup
- * object. Caches the object with it's data. Supports concurrent access.
- * 
+ * A singleton class containing static methods to manage all (none partial) LDAP queries.
+ * Caches LDAPUser and LDAPGroup objects using a LoadingCache with weak keys and soft values
+ * Returns an LDAPUser or an LDAPGroup
  */
 public class LDAPQueryManager {
 	
 	/** Singleton instance of LDAPGroupManager */
 	private static LDAPQueryManager om;
 	
+	/** Cache holding LDAPUser objects mapped by crsid */
 	private LoadingCache<String, LDAPUser> userMap;
+	/** Cache holding LDAPGroup objects mapped by groupID */
 	private LoadingCache<String, LDAPGroup> groupMap;
 	
 	/**
-	 * Gets LDAPUser object from cache. Object will be added if it is not cached
+	 * Gets an LDAPUser from the cache if it is there, or queries LDAP and stores
+	 * user in the cache if not.
+	 * @param crsid String crsid of the user to look up
+	 * @return LDAPUser holding LDAP data of user 
+	 * @throws LDAPObjectNotFoundException if user with specified crsid was not found in LDAP
 	 */
 	public static LDAPUser getUser(String crsid) throws LDAPObjectNotFoundException {
 		
@@ -41,7 +47,11 @@ public class LDAPQueryManager {
 	}
 	
 	/**
-	 * Gets LDAPGroup object from cache. Object will be added if it is not cached
+	 * Gets an LDAPGroup from the cache if it is there, or queries LDAP and stores
+	 * group in the cache if not.
+	 * @param groupID String id of the group to look up
+	 * @return LDAPGroup holding LDAP data of group 
+	 * @throws LDAPObjectNotFoundException if group with specified id was not found in LDAP
 	 */
 	public static LDAPGroup getGroup(String groupID) throws LDAPObjectNotFoundException {
 		
@@ -87,8 +97,9 @@ public class LDAPQueryManager {
 	}
 	
 	/**
-	 * Singleton method to get LDAPGroupManager 
-	 */	
+	 * Get singleton instance of LDAPQueryManager
+	 * @return LDAPQueryManager 
+	 */
 	public static LDAPQueryManager getInstance(){
 		if(om==null){
 			om = new LDAPQueryManager();
