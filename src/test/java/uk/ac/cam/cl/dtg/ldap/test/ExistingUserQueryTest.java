@@ -1,4 +1,4 @@
-package test;
+package uk.ac.cam.cl.dtg.ldap.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
