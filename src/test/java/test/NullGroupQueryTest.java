@@ -19,9 +19,8 @@ public class NullGroupQueryTest {
 		
 		// get groupname
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPGroup g = qm.getGroup(id);
+
+			LDAPGroup g = LDAPQueryManager.getGroup(id);
 			
 			g.getName();
 			fail("Did not throw exception");
@@ -36,9 +35,8 @@ public class NullGroupQueryTest {
 		
 		// get surname
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPGroup g = qm.getGroup(id);
+
+			LDAPGroup g = LDAPQueryManager.getGroup(id);
 			
 			g.getDescription();
 			fail("Did not throw exception");
@@ -53,9 +51,8 @@ public class NullGroupQueryTest {
 		
 		// get email
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPGroup g = qm.getGroup(id);
+			LDAPGroup g = LDAPQueryManager.getGroup(id);
 			
 			g.getUsers();
 			fail("Did not throw exception");

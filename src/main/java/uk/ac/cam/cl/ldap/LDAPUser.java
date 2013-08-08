@@ -36,7 +36,7 @@ public class LDAPUser extends LDAPObject {
 		this.cName = ifNull(cName,"Unknown user");
 		this.surname = ifNull(surname,"Unknown user");
 		this.email = ifNull(email,"No email");
-		this.institutions = ifNull(institutions,Arrays.asList("No institutions"));
+		this.institutions = ifNull(institutions,Arrays.asList("No institution"));
 		this.status = ifNull(status,Arrays.asList("Student"));
 		this.photos = ifNull(photos,Arrays.asList("none"));
 		

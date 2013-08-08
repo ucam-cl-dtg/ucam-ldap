@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import uk.ac.cam.cl.ldap.LDAPQueryManager;
 import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
+import uk.ac.cam.cl.ldap.LDAPQueryManager;
 import uk.ac.cam.cl.ldap.LDAPUser;
 
 public class ExistingUserQueryTest {
@@ -23,9 +23,8 @@ public class ExistingUserQueryTest {
 		// get cName
 		String cName = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPUser u = qm.getUser(crsid);
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			cName = u.getcName();
 		} catch (LDAPObjectNotFoundException e) {
@@ -42,9 +41,8 @@ public class ExistingUserQueryTest {
 		// get surname
 		String surname = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPUser u = qm.getUser(crsid);
+
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			surname = u.getSurname();
 		} catch (LDAPObjectNotFoundException e) {
@@ -61,9 +59,8 @@ public class ExistingUserQueryTest {
 		// get email
 		String email = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPUser u = qm.getUser(crsid);
+
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			email = u.getEmail();
 		} catch (LDAPObjectNotFoundException e) {
@@ -80,9 +77,8 @@ public class ExistingUserQueryTest {
 		// get status
 		List<String> status = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPUser u = qm.getUser(crsid);
+
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			status = u.getStatus();
 		} catch (LDAPObjectNotFoundException e) {
@@ -99,9 +95,8 @@ public class ExistingUserQueryTest {
 		// get primary institution
 		List<String> primaryInst = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPUser u = qm.getUser(crsid);
+
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			primaryInst = u.getInstitutions();
 		} catch (LDAPObjectNotFoundException e) {
@@ -118,9 +113,8 @@ public class ExistingUserQueryTest {
 		// get primary photo
 		List<String> primaryPhoto = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPUser u = qm.getUser(crsid);
+
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			primaryPhoto = u.getPhotos();
 		} catch (LDAPObjectNotFoundException e) {
@@ -136,9 +130,8 @@ public class ExistingUserQueryTest {
 		// get user essentials
 		HashMap<String,String> essentials = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPUser u = qm.getUser(crsid);
+
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			essentials = u.getEssentials();
 		} catch (LDAPObjectNotFoundException e) {

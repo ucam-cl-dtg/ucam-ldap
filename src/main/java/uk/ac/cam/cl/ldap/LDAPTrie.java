@@ -73,6 +73,7 @@ class LDAPTrie<T extends LDAPObject> {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	List<T> getMatches(String x) throws LDAPObjectNotFoundException {
 		
 		System.out.println("getting matches for " + x);
@@ -87,9 +88,9 @@ class LDAPTrie<T extends LDAPObject> {
 		if(!roots.containsKey(chars[0])){
 			System.out.println("[LDAP QUERY] for " + x);
 			if(result.equals("group")){
-				addMatches((List<T>)LDAPProvider.multipleGroupQuery(criteria, x, true));
+				addMatches((List<T>) LDAPProvider.multipleGroupQuery(criteria, x, true));
 			} else {
-				addMatches((List<T>)LDAPProvider.multipleUserQuery(criteria, x, true));
+				addMatches((List<T>) LDAPProvider.multipleUserQuery(criteria, x, true));
 			}
 		}
 		

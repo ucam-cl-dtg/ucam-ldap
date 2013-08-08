@@ -22,9 +22,8 @@ public class ExistingGroupQueryTest {
 		// get name
 		String name = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPGroup g = qm.getGroup(id);
+			LDAPGroup g = LDAPQueryManager.getGroup(id);
 			
 			name = g.getName();
 		} catch (LDAPObjectNotFoundException e) {
@@ -41,9 +40,8 @@ public class ExistingGroupQueryTest {
 		// get surname
 		String description = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPGroup g = qm.getGroup(id);
+			LDAPGroup g = LDAPQueryManager.getGroup(id);
 			
 			description = g.getDescription();
 		} catch (LDAPObjectNotFoundException e) {
@@ -60,9 +58,8 @@ public class ExistingGroupQueryTest {
 		// get users
 		List<String> users = null;
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPGroup g = qm.getGroup(id);
+
+			LDAPGroup g = LDAPQueryManager.getGroup(id);
 			
 			users = g.getUsers();
 		} catch (LDAPObjectNotFoundException e) {

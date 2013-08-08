@@ -19,9 +19,8 @@ public class NullUserQueryTest {
 		
 		// get cName
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
-			
-			LDAPUser u = qm.getUser(crsid);
+
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			u.getcName();
 			fail("Did not throw exception");
@@ -36,9 +35,8 @@ public class NullUserQueryTest {
 		
 		// get surname
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPUser u = qm.getUser(crsid);
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			u.getSurname();
 			fail("Did not throw exception");
@@ -53,9 +51,8 @@ public class NullUserQueryTest {
 		
 		// get email
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPUser u = qm.getUser(crsid);
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			u.getEmail();
 			fail("Did not throw exception");
@@ -70,9 +67,8 @@ public class NullUserQueryTest {
 		
 		// get status
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPUser u = qm.getUser(crsid);
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			u.getStatus();
 			fail("Did not throw exception");
@@ -87,9 +83,8 @@ public class NullUserQueryTest {
 		
 		// get primary institution
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPUser u = qm.getUser(crsid);
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			u.getInstitutions();
 			fail("Did not throw exception");
@@ -104,9 +99,8 @@ public class NullUserQueryTest {
 		
 		// get primary photo
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPUser u = qm.getUser(crsid);
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			u.getPhotos();
 			fail("Did not throw exception");
@@ -121,9 +115,8 @@ public class NullUserQueryTest {
 		
 		// get essentials
 		try {
-			LDAPQueryManager qm = LDAPQueryManager.getInstance();
 			
-			LDAPUser u = qm.getUser(crsid);
+			LDAPUser u = LDAPQueryManager.getUser(crsid);
 			
 			u.getEssentials();
 			fail("Did not throw exception");

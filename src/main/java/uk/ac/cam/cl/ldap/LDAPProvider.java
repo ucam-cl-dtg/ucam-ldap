@@ -213,6 +213,8 @@ public class LDAPProvider {
 				 while(misAffEnum.hasMore()){
 					 misAff.add(misAffEnum.next().toString());
 				 }	 
+			} else {
+				misAff = null;
 			}
 			
 			// Get institutions
@@ -225,20 +227,24 @@ public class LDAPProvider {
 				 while(instEnum.hasMore()){
 					 institutions.add(instEnum.next().toString());
 				 }	 
+			} else {
+				institutions = null;
 			}
 	
 			// Get photos
 			NamingEnumeration<?> photoEnum;
 			photos = new ArrayList<String>();
 			
-				if(userResult.get("jpegPhoto")!=null){
-					photoEnum = userResult.get("jpegPhoto").getAll();
+			if(userResult.get("jpegPhoto")!=null){
+				photoEnum = userResult.get("jpegPhoto").getAll();
 					
-					 while(photoEnum.hasMore()){
-							byte[] p = (byte[])photoEnum.next();
-							photos.add(new String(Base64.encodeBase64(p)));	
-					 }	 
-				} 
+				while(photoEnum.hasMore()){
+					byte[] p = (byte[])photoEnum.next();
+					photos.add(new String(Base64.encodeBase64(p)));	
+				}	 
+			} else {
+				photos = null;
+			}
 
 			 
 		} catch(NamingException e){
@@ -267,7 +273,6 @@ public class LDAPProvider {
 		try {
 			
 			if(!groupResult.get("visibility").get().toString().equals("cam")){
-				System.out.println("Group not visible");
 				throw new LDAPObjectNotFoundException("Group not publicly visible");
 			}
 
