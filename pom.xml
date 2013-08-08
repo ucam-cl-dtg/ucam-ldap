@@ -36,6 +36,9 @@
 			<version>4.10</version>
 		</dependency>
 	</dependencies>
+	<scm>
+		<developerConnection>scm:git:ssh://git@github.com/ucam-cl-dtg/ucam-ldap.git</developerConnection>
+	</scm>
 	<build>
 		<plugins>
 			<plugin>
