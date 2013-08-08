@@ -1,13 +1,15 @@
 ucam-ldap
 =========
 
-Library for accessing LDAP user data through Java with caching. Specialised for University of Cambridge.
+# How to use:
 
-LDAPQueryManager.java - All LDAP queries should be implemented using methods from this class
+## Specific queries
+* All queries for a specific user/group or a list of users/groups should be made through LDAPQueryManager
 
---
+### Example
 
-*LDAPQueryHelper.java -
-*LDAPUserManager.java -
-*LDAPUser.java -
-*LDAPProvider.java -
+
+## Partial queries
+* All partial queries (eg. for autocomplete user search) should be made through LDAPPartialQuery
+
+### Example
