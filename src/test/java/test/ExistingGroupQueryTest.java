@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import uk.ac.cam.cl.ldap.LDAPGroup;
-import uk.ac.cam.cl.ldap.LDAPQueryManager;
-import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
+import uk.ac.cam.cl.dtg.ldap.LDAPGroup;
+import uk.ac.cam.cl.dtg.ldap.LDAPObjectNotFoundException;
+import uk.ac.cam.cl.dtg.ldap.LDAPQueryManager;
 
 public class ExistingGroupQueryTest {
 

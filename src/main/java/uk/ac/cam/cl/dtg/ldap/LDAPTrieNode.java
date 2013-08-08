@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.ldap;
+package uk.ac.cam.cl.dtg.ldap;
 
 import java.util.List;
 import java.util.Map;

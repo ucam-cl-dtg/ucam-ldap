@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import uk.ac.cam.cl.ldap.LDAPObjectNotFoundException;
-import uk.ac.cam.cl.ldap.LDAPQueryManager;
-import uk.ac.cam.cl.ldap.LDAPUser;
+import uk.ac.cam.cl.dtg.ldap.LDAPObjectNotFoundException;
+import uk.ac.cam.cl.dtg.ldap.LDAPQueryManager;
+import uk.ac.cam.cl.dtg.ldap.LDAPUser;
 
 public class ExistingUserQueryTest {
 

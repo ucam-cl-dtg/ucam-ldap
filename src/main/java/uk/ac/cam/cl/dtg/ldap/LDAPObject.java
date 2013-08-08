@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.ldap;
+package uk.ac.cam.cl.dtg.ldap;
 
 public abstract class LDAPObject {
 
