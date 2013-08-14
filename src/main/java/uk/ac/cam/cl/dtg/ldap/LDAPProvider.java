@@ -165,7 +165,6 @@ public class LDAPProvider {
 
 		try {
 			while (searchResults.hasMore()) {
-				System.out.println("more results");
 				try {
 					LDAPGroup g = initLDAPGroup(searchResults.next()
 							.getAttributes());
@@ -195,6 +194,7 @@ public class LDAPProvider {
 		String cn;
 		String sn;
 		String mail;
+		List<String> instID;
 		List<String> misAff;
 		List<String> institutions;
 		List<String> photos;
@@ -226,6 +226,20 @@ public class LDAPProvider {
 				mail = userResult.get("mail").get().toString();
 			} else {
 				mail = null;
+			}
+			
+			// Get instID
+			NamingEnumeration<?> instIDEnum;
+			instID = new ArrayList<String>();
+
+			if (userResult.get("instID") != null) {
+				instIDEnum = userResult.get("instID").getAll();
+
+				while (instIDEnum.hasMore()) {
+					instID.add(instIDEnum.next().toString());
+				}
+			} else {
+				instID = null;
 			}
 
 			// Get misAffiliation
@@ -279,7 +293,7 @@ public class LDAPProvider {
 			throw new LDAPObjectNotFoundException("User does not exist");
 		}
 
-		return new LDAPUser(crsid, cn, sn, mail, misAff, institutions, photos);
+		return new LDAPUser(crsid, cn, sn, mail, instID, misAff, institutions, photos);
 
 	}
 

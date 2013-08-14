@@ -30,13 +30,15 @@ class LDAPTrie<T extends LDAPObject> {
 	}
 
 	void addMatches(List<T> matches) {
+		
 		for (T m : matches) {
 			addMatch(m);
-		}
+		} 
 	}
 
 	void addMatch(T match) {
 
+		
 		String key;
 		if (criteria.equals("groupTitle") || criteria.equals("sn")) {
 			key = match.getName();
@@ -107,9 +109,11 @@ class LDAPTrie<T extends LDAPObject> {
 				if (result.equals("group")) {
 					addMatches((List<T>) LDAPProvider.multipleGroupQuery(
 							criteria, x.substring(0, i + 1), true));
+					currentNode = currentNode.getChild(chars[i]);
 				} else {
 					addMatches((List<T>) LDAPProvider.multipleUserQuery(
 							criteria, x.substring(0, i + 1), true));
+					currentNode = currentNode.getChild(chars[i]);
 				}
 			} else {
 				currentNode = currentNode.getChild(chars[i]);
@@ -117,7 +121,11 @@ class LDAPTrie<T extends LDAPObject> {
 
 			if (i == chars.length - 1) { // If this is the end of the search
 											// string get all results
-				matches = currentNode.getPrefixMatches(matches);
+				if(currentNode!=null){
+					matches = currentNode.getPrefixMatches(matches);
+				} else {
+					return new ArrayList<T>();
+				}
 			}
 		}
 

@@ -71,7 +71,6 @@ public class LDAPPartialQuery {
 		List<LDAPUser> matches = userSurnameTrie.getMatches(x);
 
 		for (LDAPUser u : matches) {
-			System.out.println(u.getcName());
 			users.add(u.getEssentials());
 		}
 

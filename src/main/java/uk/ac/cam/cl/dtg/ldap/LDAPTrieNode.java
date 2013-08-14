@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.dtg.ldap;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -9,18 +10,19 @@ class LDAPTrieNode<T> {
 
 	private final Character c;
 
-	private T data;
+	private List<T> data;
 
 	Map<Character, LDAPTrieNode<T>> children = new WeakHashMap<Character, LDAPTrieNode<T>>();
 
 	LDAPTrieNode(char c) {
 		this.c = c;
-		data = null;
+		this.data = new ArrayList<T>();
 	}
 
 	LDAPTrieNode(char c, T data) {
 		this.c = c;
-		this.data = data;
+		this.data = new ArrayList<T>();
+		this.data.add(data);
 	}
 
 	char getChar() {
@@ -29,7 +31,11 @@ class LDAPTrieNode<T> {
 
 	List<T> getPrefixMatches(List<T> matches) {
 		if (data != null) {
-			matches.add(data);
+			for(T m : data) {
+				matches.add(m);
+			}
+		} else {
+			return new ArrayList<T>();
 		}
 		for (LDAPTrieNode<T> child : children.values()) {
 			matches = child.getPrefixMatches(matches);
@@ -37,7 +43,7 @@ class LDAPTrieNode<T> {
 		return matches;
 	}
 
-	T getMatch() {
+	List<T> getData() {
 		return data;
 	}
 
@@ -52,7 +58,7 @@ class LDAPTrieNode<T> {
 	}
 
 	void setData(T data) {
-		this.data = data;
+		this.data.add(data);
 	}
 
 }

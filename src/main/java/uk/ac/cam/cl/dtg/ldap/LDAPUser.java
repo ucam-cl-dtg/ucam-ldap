@@ -16,12 +16,13 @@ public class LDAPUser extends LDAPObject {
 	private String cName;
 	private String surname;
 	private String email;
+	private List<String> instID;
 	private List<String> institutions;
 	private List<String> status;
 	private List<String> photos;
 
 	/** Class constructor taking a crsid of the user to lookup **/
-	LDAPUser(String crsid, String cName, String surname, String email,
+	LDAPUser(String crsid, String cName, String surname, String email, List<String> instID,
 			List<String> status, List<String> institutions, List<String> photos) {
 
 		super();
@@ -29,13 +30,14 @@ public class LDAPUser extends LDAPObject {
 		this.crsid = crsid;
 
 		// set default values
-		this.cName = ifNull(cName, "Unknown user");
-		this.surname = ifNull(surname, "Unknown user");
-		this.email = ifNull(email, "No email");
+		this.cName = ifNull(cName, "undefined");
+		this.surname = ifNull(surname, "undefined");
+		this.email = ifNull(email, "undefined");
+		this.instID = ifNull(instID, Arrays.asList("undefined"));
 		this.institutions = ifNull(institutions,
-				Arrays.asList("No institution"));
-		this.status = ifNull(status, Arrays.asList("Student"));
-		this.photos = ifNull(photos, Arrays.asList("none"));
+				Arrays.asList("undefined"));
+		this.status = ifNull(status, Arrays.asList("undefined"));
+		this.photos = ifNull(photos, Arrays.asList("undefined"));
 
 	}
 
@@ -86,6 +88,15 @@ public class LDAPUser extends LDAPObject {
 		return email;
 	}
 
+	/**
+	 * Get institution id
+	 * 
+	 * @return String instID
+	 */
+	public List<String> getInstID() {
+		return instID;
+	}
+	
 	/**
 	 * Gets a list of institutions associated with user
 	 * 
@@ -145,6 +156,7 @@ public class LDAPUser extends LDAPObject {
 		data.put("name", cName);
 		data.put("surname", surname);
 		data.put("email", email);
+		data.put("instID", instID.get(0));
 		data.put("institution", institutions.get(0));
 		data.put("status", status.get(0));
 		data.put("photo", photos.get(0));
