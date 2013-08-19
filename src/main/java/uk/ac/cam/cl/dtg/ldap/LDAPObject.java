@@ -2,6 +2,8 @@ package uk.ac.cam.cl.dtg.ldap;
 
 public abstract class LDAPObject {
 
+	public static int counter;
+	
 	/**
 	 * Set a default if a null value is returned from LDAP
 	 */
@@ -15,7 +17,7 @@ public abstract class LDAPObject {
 	abstract String getName();
 
 	public LDAPObject() {
-
+		counter++;
 	}
 
 }

@@ -13,7 +13,7 @@ class LDAPTrie<T extends LDAPObject> {
 	String criteria;
 
 	LDAPTrie() {
-		roots = new WeakHashMap<Character, LDAPTrieNode<T>>();
+		roots = new WeakHashMap<Character, LDAPTrieNode<T>>(1);
 		result = "user";
 		criteria = "uid";
 	}

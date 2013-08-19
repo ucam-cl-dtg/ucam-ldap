@@ -5,21 +5,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import com.google.common.collect.MapMaker;
+
 /** Trie ADT Node class **/
-class LDAPTrieNode<T> {
+public class LDAPTrieNode<T> {
+	
+	public static int counter;
 
 	private final Character c;
 
 	private List<T> data;
 
-	Map<Character, LDAPTrieNode<T>> children = new WeakHashMap<Character, LDAPTrieNode<T>>();
+	Map<Character, LDAPTrieNode<T>> children;
 
 	LDAPTrieNode(char c) {
+		counter++;
+		
+		children = new MapMaker().weakKeys().softValues().makeMap();
+		
 		this.c = c;
 		this.data = new ArrayList<T>();
 	}
 
 	LDAPTrieNode(char c, T data) {
+		counter++;
+		
+		System.out.println("Building map");
+		children = new MapMaker().weakKeys().softValues().makeMap();
+		
 		this.c = c;
 		this.data = new ArrayList<T>();
 		this.data.add(data);
@@ -60,5 +73,4 @@ class LDAPTrieNode<T> {
 	void setData(T data) {
 		this.data.add(data);
 	}
-
 }
