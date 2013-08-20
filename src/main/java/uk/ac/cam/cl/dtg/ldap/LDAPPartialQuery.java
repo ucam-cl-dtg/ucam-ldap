@@ -104,6 +104,32 @@ public class LDAPPartialQuery {
 
 		return groups;
 	}
+	
+	/**
+	 * Prefix search by CRSID Makes a prefix query to LDAP for the specified
+	 * string and returns a list of users that match the query along with their
+	 * basic data (name, surname, email) but only from the institution specified
+	 * 
+	 * @param x
+	 *            prefix string to search
+	 * @return List of maps of user data
+	 * @throws LDAPObjectNotFoundException
+	 */
+	public static List<HashMap<String, String>> partialUserByCrsidInInst(String x, String i)
+			throws LDAPObjectNotFoundException {
+
+		List<HashMap<String, String>> users = new ArrayList<HashMap<String, String>>();
+
+		List<LDAPUser> instMembers = LDAPProvider.multipleUserQuery("instID", i, false);
+
+		for(LDAPUser u : instMembers){
+			if(u.getID().startsWith(x)){
+				users.add(u.getEssentials());
+			}
+		}
+
+		return users;
+	}
 
 	static LDAPTrie<LDAPUser> getUserCrsidInstance() {
 
