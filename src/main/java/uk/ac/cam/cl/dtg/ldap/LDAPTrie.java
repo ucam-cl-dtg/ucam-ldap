@@ -102,6 +102,7 @@ class LDAPTrie<T extends LDAPObject> {
 		}
 
 		for (int i = 1; i < chars.length; i++) {
+			if(currentNode==null){ return matches; }
 			if (!currentNode.children.containsKey(chars[i])) { // no more stored
 																// matches, need
 																// to get more
