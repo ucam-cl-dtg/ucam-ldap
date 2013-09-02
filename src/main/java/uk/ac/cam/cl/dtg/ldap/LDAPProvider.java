@@ -192,6 +192,7 @@ public class LDAPProvider {
 
 		String crsid;
 		String cn;
+		String dn;
 		String sn;
 		String mail;
 		List<String> instID;
@@ -206,12 +207,20 @@ public class LDAPProvider {
 			} else {
 				crsid = null;
 			}
+			
 
 			if (userResult.get("cn") != null) {
 				// Get registered name
 				cn = userResult.get("cn").get().toString();
 			} else {
 				cn = null;
+			}
+			
+			if (userResult.get("displayName") != null) {
+				// Get display name
+				dn = userResult.get("displayName").get().toString();
+			} else {
+				dn = null;
 			}
 
 			if (userResult.get("sn") != null) {
@@ -293,7 +302,7 @@ public class LDAPProvider {
 			throw new LDAPObjectNotFoundException("User does not exist");
 		}
 
-		return new LDAPUser(crsid, cn, sn, mail, instID, misAff, institutions, photos);
+		return new LDAPUser(crsid, cn, dn, sn, mail, instID, misAff, institutions, photos);
 
 	}
 

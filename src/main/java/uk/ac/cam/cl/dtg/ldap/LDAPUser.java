@@ -13,7 +13,8 @@ public class LDAPUser extends LDAPObject {
 	 * Fields to cache user data once looked up
 	 */
 	private String crsid;
-	private String cName;
+	private String regName;
+	private String displayName;
 	private String surname;
 	private String email;
 	private List<String> instID;
@@ -22,7 +23,7 @@ public class LDAPUser extends LDAPObject {
 	private List<String> photos;
 
 	/** Class constructor taking a crsid of the user to lookup **/
-	LDAPUser(String crsid, String cName, String surname, String email, List<String> instID,
+	LDAPUser(String crsid, String regName, String displayName, String surname, String email, List<String> instID,
 			List<String> status, List<String> institutions, List<String> photos) {
 
 		super();
@@ -30,7 +31,8 @@ public class LDAPUser extends LDAPObject {
 		this.crsid = crsid;
 
 		// set default values
-		this.cName = ifNull(cName, "undefined");
+		this.regName = ifNull(regName, "undefined");
+		this.displayName = ifNull(displayName, regName);
 		this.surname = ifNull(surname, "undefined");
 		this.email = ifNull(email, "undefined");
 		this.instID = ifNull(instID, Arrays.asList("undefined"));
@@ -62,12 +64,21 @@ public class LDAPUser extends LDAPObject {
 	}
 
 	/**
-	 * Get users registered name
+	 * Get users display name, defaults to registered name if not set
 	 * 
 	 * @return String registered name
 	 */
 	public String getcName() {
-		return cName;
+		return displayName;
+	}
+	
+	/**
+	 * Get users registered name
+	 * 
+	 * @return String registered name
+	 */
+	public String getRegName() {
+		return regName;
 	}
 
 	/**
@@ -136,7 +147,8 @@ public class LDAPUser extends LDAPObject {
 		HashMap<String, String> data = new HashMap<String, String>();
 
 		data.put("crsid", crsid);
-		data.put("name", cName);
+		data.put("name", regName);
+		data.put("username", displayName);
 		data.put("surname", surname);
 		data.put("email", email);
 
@@ -153,7 +165,8 @@ public class LDAPUser extends LDAPObject {
 		HashMap<String, String> data = new HashMap<String, String>();
 
 		data.put("crsid", crsid);
-		data.put("name", cName);
+		data.put("name", regName);
+		data.put("username", displayName);
 		data.put("surname", surname);
 		data.put("email", email);
 		data.put("instID", instID.get(0));
