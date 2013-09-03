@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.dtg.ldap;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,6 +42,8 @@ public class LDAPUser extends LDAPObject {
 		this.status = ifNull(status, Arrays.asList("undefined"));
 		this.photos = ifNull(photos, Arrays.asList("undefined"));
 
+		Collections.sort(institutions);
+		Collections.sort(instID);
 	}
 
 	/**
@@ -68,6 +71,15 @@ public class LDAPUser extends LDAPObject {
 	 * 
 	 * @return String registered name
 	 */
+	public String getDisplayName() {
+		return displayName;
+	}
+	
+	/**
+	 * Old method to get display name
+	 * @deprecated user {@link getDisplayName()} instead.
+	 */
+	@Deprecated
 	public String getcName() {
 		return displayName;
 	}
@@ -160,17 +172,17 @@ public class LDAPUser extends LDAPObject {
 	 * 
 	 * @return HashMap
 	 */
-	public HashMap<String, String> getAll() {
+	public HashMap<String, Object> getAll() {
 
-		HashMap<String, String> data = new HashMap<String, String>();
+		HashMap<String, Object> data = new HashMap<String, Object>();
 
 		data.put("crsid", crsid);
 		data.put("name", regName);
 		data.put("username", displayName);
 		data.put("surname", surname);
 		data.put("email", email);
-		data.put("instID", instID.get(0));
-		data.put("institution", institutions.get(0));
+		data.put("instID", instID);
+		data.put("institution", institutions);
 		data.put("status", status.get(0));
 		data.put("photo", photos.get(0));
 
