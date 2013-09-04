@@ -42,8 +42,8 @@ public class LDAPUser extends LDAPObject {
 		this.status = ifNull(status, Arrays.asList("undefined"));
 		this.photos = ifNull(photos, Arrays.asList("undefined"));
 
-		Collections.sort(institutions);
-		Collections.sort(instID);
+		Collections.sort(this.institutions);
+		Collections.sort(this.instID);
 	}
 
 	/**
