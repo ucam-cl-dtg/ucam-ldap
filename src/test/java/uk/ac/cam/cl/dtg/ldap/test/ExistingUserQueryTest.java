@@ -26,7 +26,7 @@ public class ExistingUserQueryTest {
 
 			LDAPUser u = LDAPQueryManager.getUser(crsid);
 
-			cName = u.getcName();
+			cName = u.getDisplayName();
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}

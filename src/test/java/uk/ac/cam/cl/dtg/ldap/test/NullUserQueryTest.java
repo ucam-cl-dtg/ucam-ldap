@@ -22,7 +22,7 @@ public class NullUserQueryTest {
 
 			LDAPUser u = LDAPQueryManager.getUser(crsid);
 
-			u.getcName();
+			u.getDisplayName();
 			fail("Did not throw exception");
 		} catch (LDAPObjectNotFoundException e) {
 			assertTrue((e instanceof LDAPObjectNotFoundException));
