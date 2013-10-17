@@ -47,14 +47,13 @@ public class LDAPPartialQuery {
 	 * 
 	 * @param x
 	 *            prefix string to search
+	 * @param fieldsToInclude TODO
 	 * @return List of maps of user data
 	 * @throws LDAPObjectNotFoundException
 	 */
-	public static List<HashMap<String, Object>> partialUserByCrsid(String x)
-			throws LDAPObjectNotFoundException {
-		return partialToMap(x, userCrsidMatches, LDAPUser.INCLUDE_CRSID
-				| LDAPUser.INCLUDE_NAME | LDAPUser.INCLUDE_DISPLAYNAME
-				| LDAPUser.INCLUDE_SURNAME | LDAPUser.INCLUDE_EMAIL);
+	public static List<HashMap<String, Object>> partialUserByCrsid(String x, int fieldsToInclude)
+			throws LDAPObjectNotFoundException { 
+		return partialToMap(x, userCrsidMatches, fieldsToInclude);
 	}
 
 	/**
