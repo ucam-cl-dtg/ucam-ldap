@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.dtg.ldap;
 
+import java.util.HashMap;
+
 public abstract class LDAPObject {
 
 	public static int counter;
@@ -12,9 +14,18 @@ public abstract class LDAPObject {
 		return v == null ? d : (T) v;
 	}
 
+	protected static final void add(int flags, int constant, String key,
+			Object field, HashMap<String, Object> map) {
+				if ((flags & constant) != 0) {
+					map.put(key, field);
+				}
+			}
+
 	abstract String getID();
 
 	abstract String getName();
+
+	public abstract HashMap<String, Object> toMap(int flags);
 
 	public LDAPObject() {
 		counter++;

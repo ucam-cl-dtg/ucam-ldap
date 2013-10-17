@@ -9,6 +9,9 @@ import java.util.List;
  */
 public class LDAPGroup extends LDAPObject {
 
+	private static final String KEY_DESCRIPTION = "description";
+	private static final String KEY_GROUPTITLE = "name";
+	private static final String KEY_GROUPID = "id";
 	/**
 	 * Fields to cache user data once looked up
 	 */
@@ -74,14 +77,21 @@ public class LDAPGroup extends LDAPObject {
 	 * 
 	 * @return HashMap
 	 */
-	public HashMap<String, String> getEssentials() {
+	public HashMap<String, Object> getEssentials() {
+		return toMap(INCLUDE_DESCRIPTION | INCLUDE_GROUPID | INCLUDE_GROUPTITLE);
+	}
 
-		HashMap<String, String> data = new HashMap<String, String>();
+	public static final int INCLUDE_DESCRIPTION = 1 << 0;
+	public static final int INCLUDE_GROUPID = 1 << 1;
+	public static final int INCLUDE_GROUPTITLE = 1 << 2;
+	public static final int INCLUDE_ALL = INCLUDE_DESCRIPTION | INCLUDE_GROUPID
+			| INCLUDE_GROUPTITLE;
 
-		data.put("id", groupID);
-		data.put("name", groupTitle);
-		data.put("description", description);
-
+	public HashMap<String, Object> toMap(int flags) {
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		add(flags, INCLUDE_DESCRIPTION, KEY_DESCRIPTION, description, data);
+		add(flags, INCLUDE_GROUPID, KEY_GROUPID, groupID, data);
+		add(flags, INCLUDE_GROUPTITLE, KEY_GROUPTITLE, groupTitle, data);
 		return data;
 	}
 }

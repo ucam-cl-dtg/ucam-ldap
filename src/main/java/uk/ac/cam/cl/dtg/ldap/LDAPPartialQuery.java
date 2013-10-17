@@ -1,7 +1,7 @@
 package uk.ac.cam.cl.dtg.ldap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,12 +15,29 @@ public class LDAPPartialQuery {
 	public static String ATTR_PARTIAL_QUERY = "UserPartialQuery";
 
 	/** Tries holding cached matches **/
-	private static LDAPTrie<LDAPUser> userCrsidMatches;
-	private static LDAPTrie<LDAPUser> userNameMatches;
-	private static LDAPTrie<LDAPGroup> groupNameMatches;
+	private static LDAPTrie<LDAPUser> userCrsidMatches = new LDAPTrie<LDAPUser>(
+			"user", "uid");
+	private static LDAPTrie<LDAPUser> userNameMatches = new LDAPTrie<LDAPUser>(
+			"user", "sn");
+	private static LDAPTrie<LDAPGroup> groupNameMatches = new LDAPTrie<LDAPGroup>(
+			"group", "groupTitle");
 
 	private LDAPPartialQuery() {
 
+	}
+
+	private static <T extends LDAPObject> List<HashMap<String, Object>> partialToMap(
+			String partialQuery, LDAPTrie<T> trie, int fieldsToMap)
+			throws LDAPObjectNotFoundException {
+		if (partialQuery == null)
+			throw new LDAPObjectNotFoundException(
+					"No records found. Query was null");
+		List<T> matches = trie.getMatches(partialQuery);
+		List<HashMap<String, Object>> result = new LinkedList<HashMap<String, Object>>();
+		for (T t : matches) {
+			result.add(t.toMap(fieldsToMap));
+		}
+		return result;
 	}
 
 	/**
@@ -33,21 +50,11 @@ public class LDAPPartialQuery {
 	 * @return List of maps of user data
 	 * @throws LDAPObjectNotFoundException
 	 */
-	public static List<HashMap<String, String>> partialUserByCrsid(String x)
+	public static List<HashMap<String, Object>> partialUserByCrsid(String x)
 			throws LDAPObjectNotFoundException {
-
-		List<HashMap<String, String>> users = new ArrayList<HashMap<String, String>>();
-
-		LDAPTrie<LDAPUser> userCrsidTrie = LDAPPartialQuery
-				.getUserCrsidInstance();
-
-		List<LDAPUser> matches = userCrsidTrie.getMatches(x);
-
-		for (LDAPUser u : matches) {
-			users.add(u.getEssentials());
-		}
-
-		return users;
+		return partialToMap(x, userCrsidMatches, LDAPUser.INCLUDE_CRSID
+				| LDAPUser.INCLUDE_NAME | LDAPUser.INCLUDE_DISPLAYNAME
+				| LDAPUser.INCLUDE_SURNAME | LDAPUser.INCLUDE_EMAIL);
 	}
 
 	/**
@@ -60,21 +67,11 @@ public class LDAPPartialQuery {
 	 * @return List of maps of user data
 	 * @throws LDAPObjectNotFoundException
 	 */
-	public static List<HashMap<String, String>> partialUserBySurname(String x)
+	public static List<HashMap<String, Object>> partialUserBySurname(String x)
 			throws LDAPObjectNotFoundException {
-
-		List<HashMap<String, String>> users = new ArrayList<HashMap<String, String>>();
-
-		LDAPTrie<LDAPUser> userSurnameTrie = LDAPPartialQuery
-				.getUserNameInstance();
-
-		List<LDAPUser> matches = userSurnameTrie.getMatches(x);
-
-		for (LDAPUser u : matches) {
-			users.add(u.getEssentials());
-		}
-
-		return users;
+		return partialToMap(x, userNameMatches, LDAPUser.INCLUDE_CRSID
+				| LDAPUser.INCLUDE_NAME | LDAPUser.INCLUDE_DISPLAYNAME
+				| LDAPUser.INCLUDE_SURNAME | LDAPUser.INCLUDE_EMAIL);
 	}
 
 	/**
@@ -88,23 +85,12 @@ public class LDAPPartialQuery {
 	 * @return List of maps of group data
 	 * @throws LDAPObjectNotFoundException
 	 */
-	public static List<HashMap<String, String>> partialGroupByName(String x)
+	public static List<HashMap<String, Object>> partialGroupByName(String x)
 			throws LDAPObjectNotFoundException {
-
-		List<HashMap<String, String>> groups = new ArrayList<HashMap<String, String>>();
-
-		LDAPTrie<LDAPGroup> groupNameTrie = LDAPPartialQuery
-				.getGroupNameInstance();
-
-		List<LDAPGroup> matches = groupNameTrie.getMatches(x);
-
-		for (LDAPGroup g : matches) {
-			groups.add(g.getEssentials());
-		}
-
-		return groups;
+		return partialToMap(x, groupNameMatches, LDAPGroup.INCLUDE_DESCRIPTION
+				| LDAPGroup.INCLUDE_GROUPID | LDAPGroup.INCLUDE_GROUPTITLE);
 	}
-	
+
 	/**
 	 * Prefix search by CRSID Makes a prefix query to LDAP for the specified
 	 * string and returns a list of users that match the query along with their
@@ -115,44 +101,15 @@ public class LDAPPartialQuery {
 	 * @return List of maps of user data
 	 * @throws LDAPObjectNotFoundException
 	 */
-	public static List<HashMap<String, String>> partialUserByCrsidInInst(String x, String i)
-			throws LDAPObjectNotFoundException {
+	public static List<HashMap<String, Object>> partialUserByCrsidInInst(
+			String x, String i) throws LDAPObjectNotFoundException {
 
-		List<HashMap<String, String>> users = new ArrayList<HashMap<String, String>>();
+		LDAPTrie<LDAPUser> instUsers = new LDAPTrie<>(
+				LDAPProvider.multipleUserQuery("instID", i, false));
 
-		List<LDAPUser> instMembers = LDAPProvider.multipleUserQuery("instID", i, false);
-
-		for(LDAPUser u : instMembers){
-			if(u.getID().startsWith(x)){
-				users.add(u.getEssentials());
-			}
-		}
-
-		return users;
-	}
-
-	static LDAPTrie<LDAPUser> getUserCrsidInstance() {
-
-		if (userCrsidMatches == null) {
-			userCrsidMatches = new LDAPTrie<LDAPUser>("user", "uid");
-		}
-		return userCrsidMatches;
-	}
-
-	static LDAPTrie<LDAPUser> getUserNameInstance() {
-
-		if (userNameMatches == null) {
-			userNameMatches = new LDAPTrie<LDAPUser>("user", "sn");
-		}
-		return userNameMatches;
-	}
-
-	static LDAPTrie<LDAPGroup> getGroupNameInstance() {
-
-		if (groupNameMatches == null) {
-			groupNameMatches = new LDAPTrie<LDAPGroup>("group", "groupTitle");
-		}
-		return groupNameMatches;
+		return partialToMap(x, instUsers, LDAPUser.INCLUDE_CRSID
+				| LDAPUser.INCLUDE_NAME | LDAPUser.INCLUDE_DISPLAYNAME
+				| LDAPUser.INCLUDE_SURNAME | LDAPUser.INCLUDE_EMAIL);
 	}
 
 }

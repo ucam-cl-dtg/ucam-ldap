@@ -126,19 +126,13 @@ public class ExistingUserQueryTest {
 
 	@Test
 	public void getEssentials() {
-
-		// get user essentials
-		HashMap<String, String> essentials = null;
 		try {
-
 			LDAPUser u = LDAPQueryManager.getUser(crsid);
-
-			essentials = u.getEssentials();
+			HashMap<String, Object> essentials = u.getEssentials();
+			assertNotNull(essentials);
 		} catch (LDAPObjectNotFoundException e) {
 			fail(e.getMessage());
 		}
-		assertNotNull(essentials);
-
 	}
 
 }
