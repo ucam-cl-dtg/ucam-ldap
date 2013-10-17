@@ -159,14 +159,49 @@ public class LDAPUser extends LDAPObject {
 		return photos;
 	}
 
+	/**
+	 * Flag to include the user's CRSID in results
+	 */
 	public static final int INCLUDE_CRSID = 1 << 0;
+	
+	/**
+	 * Flag to include the display name.  This is either their personalised choice of name if they have one or their LDAP registered name if they dont
+	 */
 	public static final int INCLUDE_DISPLAYNAME = 1 << 2;
+	
+	/**
+	 * Flag to include email address
+	 */
 	public static final int INCLUDE_EMAIL = 1 << 3;
+	
+	/**
+	 * Flag to include instid. TODO: What is this?
+	 */
 	public static final int INCLUDE_INSTID = 1 << 4;
+	
+	/**
+	 * Flag to include a list of institution names that the user is associated with
+	 */
 	public static final int INCLUDE_INSTITUTIONS = 1 << 5;
+	
+	/**
+	 * Flag to include the user's photo - this is a base64 encoded jpeg 
+	 */
 	public static final int INCLUDE_PHOTO = 1 << 6;
+	
+	/**
+	 * Flag to include the user's registered name from LDAP
+	 */
 	public static final int INCLUDE_NAME = 1 << 7;
+	
+	/**
+	 * Flag to include the user's status. TODO: what values can this have
+	 */
 	public static final int INCLUDE_STATUS = 1 << 8;
+	
+	/**
+	 * Flag to include the user's surname
+	 */
 	public static final int INCLUDE_SURNAME = 1 << 9;
 
 	public static final int INCLUDE_ALL = INCLUDE_CRSID | INCLUDE_DISPLAYNAME
