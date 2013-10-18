@@ -14,7 +14,7 @@ import com.google.common.cache.LoadingCache;
 public class LDAPQueryManager {
 
 	/** Singleton instance of LDAPGroupManager */
-	private static LDAPQueryManager om;
+	private static LDAPQueryManager om = new LDAPQueryManager();
 
 	/** Cache holding LDAPUser objects mapped by crsid */
 	private LoadingCache<String, LDAPUser> userMap;
@@ -35,21 +35,11 @@ public class LDAPQueryManager {
 			throws LDAPObjectNotFoundException {
 
 		LDAPQueryManager qm = LDAPQueryManager.getInstance();
-
-		LDAPUser user;
 		try {
-			user = qm.userMap.get(crsid);
+			return qm.userMap.get(crsid);
 		} catch (ExecutionException e) {
-			throw new LDAPObjectNotFoundException("Error getting user: "
-					+ e.getMessage());
+			throw new LDAPObjectNotFoundException("ExecutionException retrieving user", e);
 		}
-
-		if (user == null) {
-			throw new LDAPObjectNotFoundException(
-					"Unable to retrieve user from cache or otherwise");
-		}
-
-		return user;
 	}
 
 	/**
@@ -66,21 +56,11 @@ public class LDAPQueryManager {
 			throws LDAPObjectNotFoundException {
 
 		LDAPQueryManager qm = LDAPQueryManager.getInstance();
-
-		LDAPGroup group;
 		try {
-			group = qm.groupMap.get(groupID);
+			return qm.groupMap.get(groupID);
 		} catch (ExecutionException e) {
-			throw new LDAPObjectNotFoundException("Error getting group: "
-					+ e.getMessage());
+			throw new LDAPObjectNotFoundException("ExecutionException retieving user",e);
 		}
-
-		if (group == null) {
-			throw new LDAPObjectNotFoundException(
-					"Unable to retrieve group from cache or otherwise");
-		}
-
-		return group;
 	}
 
 	private LDAPQueryManager() {
@@ -109,9 +89,6 @@ public class LDAPQueryManager {
 	 * @return LDAPQueryManager
 	 */
 	public static LDAPQueryManager getInstance() {
-		if (om == null) {
-			om = new LDAPQueryManager();
-		}
 		return om;
 	}
 }
