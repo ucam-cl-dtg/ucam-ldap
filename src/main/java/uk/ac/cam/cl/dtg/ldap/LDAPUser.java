@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A class containing all data for a particular LDAP queried user
@@ -22,6 +20,8 @@ public class LDAPUser extends LDAPObject {
 	private static final String KEY_EMAIL = "email";
 	public static final String KEY_DISPLAYNAME = "username";
 	public static final String KEY_CRSID = "crsid";
+	public static final String KEY_COLLEGENAME = "collegename";
+	
 	/**
 	 * Fields to cache user data once looked up
 	 */
@@ -34,8 +34,6 @@ public class LDAPUser extends LDAPObject {
 	private List<String> institutions;
 	private List<String> status;
 	private List<String> photos;
-
-	private static Logger log = LoggerFactory.getLogger(LDAPUser.class);
 
 	/** Class constructor taking a crsid of the user to lookup **/
 	LDAPUser(String crsid, String regName, String displayName, String surname,
@@ -58,25 +56,74 @@ public class LDAPUser extends LDAPObject {
 
 		Collections.sort(this.institutions);
 		Collections.sort(this.instID);
-
-		log.error("Created LDAP user {}, {}, {}, {}", crsid, instID,
-				institutions, status);
 	}
 
 	/**
-	 * Will return true if user is an undergrad or postgrad
+	 * Will return true if user is an undergrad or postgrad.
 	 * 
 	 * @return
 	 */
 	public boolean isStudent() {
-		return this.status.get(0).equals("student");
+		return this.status.contains("student");
 	}
 
 	/**
-	 * Will return true if user is a staff member
+	 * Will return true if user is a staff member. However, some students also
+	 * have this flag set
 	 */
 	public boolean isStaff() {
-		return this.status.get(0).equals("staff");
+		return this.status.contains("staff");
+	}
+
+	private static ConcurrentHashMap<String, String> collegeMap;
+	static {
+		collegeMap = new ConcurrentHashMap<String, String>();
+
+		collegeMap.put("CHRSTUG", "Christ's");
+		collegeMap.put("CHURUG", "Churchill");
+		collegeMap.put("CLAREUG", "Clare");
+		collegeMap.put("CORPUG", "Corpus Christi");
+		collegeMap.put("DOWNUG", "Downing");
+		collegeMap.put("EMMUG", "Emmanuel");
+		collegeMap.put("FITZUG", "Fitzwilliam");
+		collegeMap.put("GIRTUG", "Girton");
+		collegeMap.put("CAIUSUG", "Gonville & Caius");
+		collegeMap.put("HOMUG", "Homerton");
+		collegeMap.put("HUGHUG", "Hughes Hall");
+		collegeMap.put("JESUSUG", "Jesus");
+		collegeMap.put("KINGSUG", "King's");
+		collegeMap.put("LCCUG", "Lucy Cavendish");
+		collegeMap.put("MAGDUG", "Magdalene");
+		collegeMap.put("NEWHUG", "Murray Edwards");
+		collegeMap.put("NEWNUG", "Newnham");
+		collegeMap.put("PEMBUG", "Pembroke");
+		collegeMap.put("PETUG", "Peterhouse");
+		collegeMap.put("QUENUG", "Queens'");
+		collegeMap.put("ROBINUG", "Robinson");
+		collegeMap.put("SELUG", "Selwyn");
+		collegeMap.put("SIDUG", "Sidney Sussex");
+		collegeMap.put("CATHUG", "St Catharine's");
+		collegeMap.put("EDMUG", "St Edmund's");
+		collegeMap.put("JOHNSUG", "St John's");
+		collegeMap.put("TRINUG", "Trinity");
+		collegeMap.put("TRINHUG", "Trinity Hall");
+		collegeMap.put("WOLFCUG", "Wolfson");
+	}
+
+	/**
+	 * Returns the name of the student's college. This doesn't produce the right
+	 * results for graduate students (at least). Returns the string "Unknown" if
+	 * no college is found.
+	 * 
+	 * @return
+	 */
+	public String getCollegeName() {
+		for (String inst : instID) {
+			String name = collegeMap.get(inst);
+			if (name != null)
+				return name;
+		}
+		return "Unknown";
 	}
 
 	/**
@@ -231,9 +278,14 @@ public class LDAPUser extends LDAPObject {
 	 */
 	public static final int INCLUDE_SURNAME = 1 << 9;
 
+	/**
+	 * Flag to inlcude the user's college if we could work it out.
+	 */
+	public static final int INCLUDE_COLLEGENAME = 1<<10;
+	
 	public static final int INCLUDE_ALL = INCLUDE_CRSID | INCLUDE_DISPLAYNAME
 			| INCLUDE_EMAIL | INCLUDE_INSTID | INCLUDE_INSTITUTIONS
-			| INCLUDE_PHOTO | INCLUDE_NAME | INCLUDE_STATUS | INCLUDE_SURNAME;
+			| INCLUDE_PHOTO | INCLUDE_NAME | INCLUDE_STATUS | INCLUDE_SURNAME | INCLUDE_COLLEGENAME;
 
 	@Override
 	public HashMap<String, Object> toMap(int flags) {
@@ -247,6 +299,7 @@ public class LDAPUser extends LDAPObject {
 		add(flags, INCLUDE_NAME, KEY_NAME, regName, data);
 		add(flags, INCLUDE_STATUS, KEY_STATUS, status.get(0), data);
 		add(flags, INCLUDE_SURNAME, KEY_SURNAME, surname, data);
+		add(flags,INCLUDE_COLLEGENAME, KEY_COLLEGENAME,getCollegeName(),data);
 		return data;
 	}
 
