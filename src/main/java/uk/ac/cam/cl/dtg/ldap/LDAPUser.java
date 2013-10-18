@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A class containing all data for a particular LDAP queried user
  */
@@ -32,6 +35,8 @@ public class LDAPUser extends LDAPObject {
 	private List<String> status;
 	private List<String> photos;
 
+	private static Logger log = LoggerFactory.getLogger(LDAPUser.class);
+
 	/** Class constructor taking a crsid of the user to lookup **/
 	LDAPUser(String crsid, String regName, String displayName, String surname,
 			String email, List<String> instID, List<String> status,
@@ -53,6 +58,25 @@ public class LDAPUser extends LDAPObject {
 
 		Collections.sort(this.institutions);
 		Collections.sort(this.instID);
+
+		log.error("Created LDAP user {}, {}, {}, {}", crsid, instID,
+				institutions, status);
+	}
+
+	/**
+	 * Will return true if user is an undergrad or postgrad
+	 * 
+	 * @return
+	 */
+	public boolean isStudent() {
+		return this.status.get(0).equals("student");
+	}
+
+	/**
+	 * Will return true if user is a staff member
+	 */
+	public boolean isStaff() {
+		return this.status.get(0).equals("staff");
 	}
 
 	/**
@@ -163,42 +187,45 @@ public class LDAPUser extends LDAPObject {
 	 * Flag to include the user's CRSID in results
 	 */
 	public static final int INCLUDE_CRSID = 1 << 0;
-	
+
 	/**
-	 * Flag to include the display name.  This is either their personalised choice of name if they have one or their LDAP registered name if they dont
+	 * Flag to include the display name. This is either their personalised
+	 * choice of name if they have one or their LDAP registered name if they
+	 * dont
 	 */
 	public static final int INCLUDE_DISPLAYNAME = 1 << 2;
-	
+
 	/**
 	 * Flag to include email address
 	 */
 	public static final int INCLUDE_EMAIL = 1 << 3;
-	
+
 	/**
-	 * Flag to include instid. TODO: What is this?
+	 * Flag to include instid. This is a list of groupIDs for LDAP groups
 	 */
 	public static final int INCLUDE_INSTID = 1 << 4;
-	
+
 	/**
-	 * Flag to include a list of institution names that the user is associated with
+	 * Flag to include a list of institution names that the user is associated
+	 * with. This is a list of names corresponding with instIDs
 	 */
 	public static final int INCLUDE_INSTITUTIONS = 1 << 5;
-	
+
 	/**
-	 * Flag to include the user's photo - this is a base64 encoded jpeg 
+	 * Flag to include the user's photo - this is a base64 encoded jpeg
 	 */
 	public static final int INCLUDE_PHOTO = 1 << 6;
-	
+
 	/**
 	 * Flag to include the user's registered name from LDAP
 	 */
 	public static final int INCLUDE_NAME = 1 << 7;
-	
+
 	/**
 	 * Flag to include the user's status. TODO: what values can this have
 	 */
 	public static final int INCLUDE_STATUS = 1 << 8;
-	
+
 	/**
 	 * Flag to include the user's surname
 	 */
