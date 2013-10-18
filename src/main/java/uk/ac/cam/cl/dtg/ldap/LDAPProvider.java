@@ -184,7 +184,7 @@ public class LDAPProvider {
 	}
 
 	private static String getString(Attributes userResult, String name) {
-		Attribute a = userResult.get("name");
+		Attribute a = userResult.get(name);
 		if (a != null) {
 			try {
 				return a.get().toString();
@@ -196,7 +196,7 @@ public class LDAPProvider {
 	}
 
 	private static List<String> getStringList(Attributes userResult, String name) {
-		Attribute a = userResult.get("name");
+		Attribute a = userResult.get(name);
 		if (a != null) {
 			try {
 				NamingEnumeration<?> instIDEnum = a.getAll();
@@ -223,6 +223,7 @@ public class LDAPProvider {
 		String crsid = getString(userResult, "uid");
 
 		if (crsid == null) { // If uid is null the user does not exist
+			log.warn("Asked to initialise a user but no uid found");
 			throw new LDAPObjectNotFoundException("User does not exist");
 		}
 
