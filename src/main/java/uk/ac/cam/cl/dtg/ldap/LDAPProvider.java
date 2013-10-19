@@ -38,7 +38,7 @@ public class LDAPProvider {
 		env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, PROVIDER_URL);
 	}
-	
+
 	/**
 	 * Initialises context and sets up basic query
 	 * 
@@ -75,15 +75,17 @@ public class LDAPProvider {
 	private static Attributes setupUniqueQuery(String type, String parameter,
 			String subtree) throws LDAPObjectNotFoundException {
 		try {
-			SearchResult searchResult = initialiseContext(type, parameter, subtree,
-					false).next();
-			if (searchResult == null) {
+			NamingEnumeration<SearchResult> namingEnumeration = initialiseContext(
+					type, parameter, subtree, false);
+			if (namingEnumeration.hasMore()) {
+				SearchResult searchResult = namingEnumeration.next();
+				return searchResult.getAttributes();
+			} else {
 				log.warn(
 						"No result found for query type={}, parameter={},subtree={}",
 						type, parameter, subtree);
 				return null;
 			}
-			return searchResult.getAttributes();
 		} catch (NamingException e) {
 			log.warn("Naming exception when processing NamingEnumeration", e);
 			return null;
@@ -148,7 +150,7 @@ public class LDAPProvider {
 		if (groupResult == null) {
 			throw new LDAPObjectNotFoundException("Group not found");
 		}
-		
+
 		return initLDAPGroup(groupResult);
 	}
 
