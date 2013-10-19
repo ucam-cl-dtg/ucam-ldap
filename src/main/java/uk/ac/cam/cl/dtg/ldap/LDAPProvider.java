@@ -32,7 +32,7 @@ public class LDAPProvider {
 	private static final Logger log = LoggerFactory
 			.getLogger(LDAPProvider.class);
 
-	private static final Hashtable<String,String> env;
+	private static final Hashtable<String, String> env;
 	static {
 		env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
@@ -85,7 +85,7 @@ public class LDAPProvider {
 			}
 			return searchResult.getAttributes();
 		} catch (NamingException e) {
-			log.warn("Naming exception when processing NamingEnumeration",e);
+			log.warn("Naming exception when processing NamingEnumeration", e);
 			return null;
 		}
 	}
@@ -99,7 +99,8 @@ public class LDAPProvider {
 	static LDAPUser uniqueUserQuery(String lookupKey, String lookupValue)
 			throws LDAPObjectNotFoundException {
 
-		Attributes userResult = setupUniqueQuery(lookupKey, lookupValue, "people");
+		Attributes userResult = setupUniqueQuery(lookupKey, lookupValue,
+				"people");
 
 		if (userResult == null) {
 			throw new LDAPObjectNotFoundException("User not found");
@@ -123,7 +124,9 @@ public class LDAPProvider {
 				users.add(initLDAPUser(searchResults.next().getAttributes()));
 			}
 		} catch (NamingException e) {
-			log.warn("Naming exception when processing NamingEnumeration in multipleUserQuery",e);
+			log.warn(
+					"Naming exception when processing NamingEnumeration in multipleUserQuery",
+					e);
 			return new LinkedList<LDAPUser>();
 		}
 
@@ -170,15 +173,17 @@ public class LDAPProvider {
 							.getAttributes());
 					groups.add(g);
 				} catch (LDAPObjectNotFoundException e) {
-					// I think we do this because some groups might not be visible
-					// TODO: just update the search to only include visible groups
+					// I think we do this because some groups might not be
+					// visible
+					// TODO: just update the search to only include visible
+					// groups
 					// don't add the group to the list
 					// log.debug(e.getMessage);
 				}
 			}
 			return groups;
 		} catch (NamingException e) {
-			log.warn("Naming exception in multipleGroupQuery",e);
+			log.warn("Naming exception in multipleGroupQuery", e);
 			return new LinkedList<LDAPGroup>();
 		}
 	}
