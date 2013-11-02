@@ -14,6 +14,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,7 +210,13 @@ public class LDAPProvider {
 				NamingEnumeration<?> instIDEnum = a.getAll();
 				LinkedList<String> instID = new LinkedList<String>();
 				while (instIDEnum.hasMore()) {
-					instID.add(instIDEnum.next().toString());
+					Object v = instIDEnum.next();
+					if (v instanceof byte[]) {
+						instID.add(new String(Base64.encodeBase64((byte[])v)));
+					}
+					else {
+						instID.add(v.toString());
+					}
 				}
 				return instID;
 			} catch (NamingException e) {
