@@ -65,16 +65,14 @@ public class LDAPQueryManager {
 
 	private LDAPQueryManager() {
 		// Create a user cache with soft keys
-		userMap = CacheBuilder.newBuilder().maximumSize(500).weakKeys()
-				.softValues().build(new CacheLoader<String, LDAPUser>() {
+		userMap = CacheBuilder.newBuilder().maximumSize(500).build(new CacheLoader<String, LDAPUser>() {
 					public LDAPUser load(String crsid)
 							throws LDAPObjectNotFoundException {
 						return LDAPProvider.uniqueUserQuery("uid", crsid);
 					}
 				});
 		// Create a group cache with soft keys
-		groupMap = CacheBuilder.newBuilder().maximumSize(10).weakKeys()
-				.softValues().build(new CacheLoader<String, LDAPGroup>() {
+		groupMap = CacheBuilder.newBuilder().maximumSize(10).build(new CacheLoader<String, LDAPGroup>() {
 					public LDAPGroup load(String groupID)
 							throws LDAPObjectNotFoundException {
 						return LDAPProvider
