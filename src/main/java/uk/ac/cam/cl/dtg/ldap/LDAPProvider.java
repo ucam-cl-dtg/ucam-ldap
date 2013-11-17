@@ -82,7 +82,7 @@ public class LDAPProvider {
 				SearchResult searchResult = namingEnumeration.next();
 				return searchResult.getAttributes();
 			} else {
-				log.warn(
+				log.info(
 						"No result found for query type={}, parameter={},subtree={}",
 						type, parameter, subtree);
 				return null;
