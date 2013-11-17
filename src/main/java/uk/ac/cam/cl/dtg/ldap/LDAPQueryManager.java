@@ -2,6 +2,9 @@ package uk.ac.cam.cl.dtg.ldap;
 
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -13,6 +16,16 @@ import com.google.common.cache.LoadingCache;
  */
 public class LDAPQueryManager {
 
+	/**
+	 * A placeholder object which we insert in the cache if we fail to find a user in the directory
+	 */
+	private static final LDAPUser USER_NOT_FOUND = new LDAPUser("not-found", "not-found", "not-found", "not-found", "not-found", null, null, null, null);
+
+	/**
+	 * A placeholder object which we insert in the cache if we fail to find a group in the directory
+	 */
+	private static final LDAPGroup GROUP_NOT_FOUND = new LDAPGroup("not-found", "not-found", "not-found", null);
+	
 	/** Singleton instance of LDAPGroupManager */
 	private static LDAPQueryManager om = new LDAPQueryManager();
 
@@ -21,6 +34,8 @@ public class LDAPQueryManager {
 	/** Cache holding LDAPGroup objects mapped by groupID */
 	private LoadingCache<String, LDAPGroup> groupMap;
 
+	private static final Logger log = LoggerFactory.getLogger(LDAPQueryManager.class);
+	
 	/**
 	 * Gets an LDAPUser from the cache if it is there, or queries LDAP and
 	 * stores user in the cache if not.
@@ -36,9 +51,14 @@ public class LDAPQueryManager {
 
 		LDAPQueryManager qm = LDAPQueryManager.getInstance();
 		try {
-			return qm.userMap.get(crsid);
+			LDAPUser user = qm.userMap.get(crsid);
+			if (user == USER_NOT_FOUND) {
+				throw new LDAPObjectNotFoundException("User "+crsid+" not found in directory");
+			}
+			return user;
 		} catch (ExecutionException e) {
-			throw new LDAPObjectNotFoundException("ExecutionException retrieving user", e);
+			log.error("Unexpected exception when looking up user in LDAP",e);
+			throw new LDAPObjectNotFoundException("Unexpected exception querying directory",e);
 		}
 	}
 
@@ -57,26 +77,38 @@ public class LDAPQueryManager {
 
 		LDAPQueryManager qm = LDAPQueryManager.getInstance();
 		try {
-			return qm.groupMap.get(groupID);
+			LDAPGroup group = qm.groupMap.get(groupID);
+			if (group == GROUP_NOT_FOUND) {
+				throw new LDAPObjectNotFoundException("Group "+groupID+" not found in directory");
+			}
+			return group;
 		} catch (ExecutionException e) {
-			throw new LDAPObjectNotFoundException("ExecutionException retieving user",e);
+			log.error("Unexpected exception when looking up user in LDAP",e);
+			throw new LDAPObjectNotFoundException("Unexpected exception querying directory",e);
 		}
 	}
 
 	private LDAPQueryManager() {
 		// Create a user cache with soft keys
 		userMap = CacheBuilder.newBuilder().maximumSize(500).build(new CacheLoader<String, LDAPUser>() {
-					public LDAPUser load(String crsid)
-							throws LDAPObjectNotFoundException {
-						return LDAPProvider.uniqueUserQuery("uid", crsid);
+					public LDAPUser load(String crsid) {
+						try {
+							log.info("Querying for "+crsid);
+							return LDAPProvider.uniqueUserQuery("uid", crsid);
+						} catch (LDAPObjectNotFoundException e) {
+							return USER_NOT_FOUND;
+						}
 					}
 				});
 		// Create a group cache with soft keys
 		groupMap = CacheBuilder.newBuilder().maximumSize(10).build(new CacheLoader<String, LDAPGroup>() {
-					public LDAPGroup load(String groupID)
-							throws LDAPObjectNotFoundException {
-						return LDAPProvider
-								.uniqueGroupQuery("groupID", groupID);
+					public LDAPGroup load(String groupID) {
+						try {
+							return LDAPProvider
+									.uniqueGroupQuery("groupID", groupID);
+						} catch (LDAPObjectNotFoundException e) {
+							return GROUP_NOT_FOUND;							
+						}
 					}
 				});
 	}
