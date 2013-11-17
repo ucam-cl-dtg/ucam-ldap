@@ -106,7 +106,7 @@ public class LDAPProvider {
 				"people");
 
 		if (userResult == null) {
-			throw new LDAPObjectNotFoundException("User not found");
+			throw new LDAPObjectNotFoundException("User "+lookupKey+"="+lookupValue+" not found");
 		}
 
 		return initLDAPUser(userResult);
