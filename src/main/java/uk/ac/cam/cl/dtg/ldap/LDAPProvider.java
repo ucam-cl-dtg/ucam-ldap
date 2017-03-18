@@ -47,8 +47,9 @@ public class LDAPProvider {
 	 */
 	private static NamingEnumeration<SearchResult> initialiseContext(
 			String type, String parameter, String subtree, boolean partial) {
+	        DirContext ctx = null;	       
 		try {
-			DirContext ctx = new InitialDirContext(env);
+			ctx = new InitialDirContext(env);
 			SearchControls controls = new SearchControls();
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
@@ -62,6 +63,15 @@ public class LDAPProvider {
 
 		} catch (NamingException e) {
 			log.warn("Failed to initialise LDAP context", e);
+		} finally {
+  		        if (ctx != null) {
+			    try {
+				ctx.close();
+			    }
+			    catch (NamingException e2) {
+				log.warn("Failed to close LDAP context", e2);
+			    }
+		        }
 		}
 
 		return new EmptyNamingEnumeration();
