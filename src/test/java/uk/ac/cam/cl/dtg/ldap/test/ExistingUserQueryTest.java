@@ -15,7 +15,7 @@ import uk.ac.cam.cl.dtg.ldap.LDAPUser;
 public class ExistingUserQueryTest {
 
 	// user that exists
-	String crsid = "hp343";
+	String crsid = "acr31";
 
 	@Test
 	public void getcName() {
