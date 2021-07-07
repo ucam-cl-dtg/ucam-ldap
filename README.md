@@ -11,71 +11,74 @@ ucam-ldap
 ### Examples
 * Get a user's data
 
-        LDAPUser u;
-        try {
-          u = LDAPQueryManager.getUser(crsid);
-        } catch(LDAPObjectNotFoundException e){
-          //Error getting user - do something
-        }
+``` Java
+LDAPUser u;
+try {
+	u = LDAPQueryManager.getUser(crsid);
+} catch(LDAPObjectNotFoundException e){
+//Error getting user - do something
+}
         
-        String name = u.getcName(); // get users registered name
-        List<String> photos = u.getPhotos(); // get a list of users photos
-  
+String name = u.getcName(); // get users registered name
+List<String> photos = u.getPhotos(); // get a list of users photos
+```
+
 * Get a group's data
 
-        LDAPGroup g;
-        try {
-          g = LDAPQueryManager.getGroup(id);
-        } catch(LDAPObjectNotFoundException e){
-          //Error getting group - do something
-        }
+``` Java
+LDAPGroup g;
+try {
+	g = LDAPQueryManager.getGroup(id);
+} catch(LDAPObjectNotFoundException e){
+	//Error getting group - do something
+}
       
-        String description = g.getDescription; // get group description
+String description = g.getDescription; // get group description
+```
 
 * Get group member data
-
-        LDAPGroup g;
-        try {
-          g = LDAPQueryManager.getGroup(id);
-          List<String userCrsids = g.getUsers();
-          List<LDAPUser> users;
-          for(String u : userCrsids) {
-            users.add(LDAPQueryManager.getUser(u));
-          }
-        } catch(LDAPObjectNotFoundException e){
-          //do something
-        } 
+``` Java
+LDAPGroup g;
+try {
+	g = LDAPQueryManager.getGroup(id);
+        List<String userCrsids = g.getUsers();
+        List<LDAPUser> users;
+        for(String u : userCrsids) {
+        	users.add(LDAPQueryManager.getUser(u));
+        }
+} catch(LDAPObjectNotFoundException e){
+	//do something
+}
+```
 
 * Autocomplete search for users by CRSID
-
-    	@POST @Path("/queryCRSID")
-  		public List<HashMap<String, String>> queryCRSId(@FormParam("q") String x) {
-  			
-  			// Perform LDAP search
-  			List<HashMap<String, String>> matches = null;
-  			try {
-  				matches = LDAPPartialQuery.partialUserByCrsid(x);
-  			} catch (LDAPObjectNotFoundException e){
-  				log.error("Error performing LDAPQuery: " + e.getMessage());
-  				return new ArrayList<HashMap<String, String>>();
-  			}
-  			
-  			return matches;
-  		}
-
+``` Java
+@POST @Path("/queryCRSID")
+public List<HashMap<String, String>> queryCRSId(@FormParam("q") String x) {  			
+// Perform LDAP search
+List<HashMap<String, String>> matches = null;
+	try {
+  		matches = LDAPPartialQuery.partialUserByCrsid(x);
+  	} catch (LDAPObjectNotFoundException e){
+		log.error("Error performing LDAPQuery: " + e.getMessage());
+  		return new ArrayList<HashMap<String, String>>();
+  	}		
+	return matches;
+}
+```
 * Autocomplete search for users by surname
-
-	  	@POST @Path("/querySurname")
-		  public List<HashMap<String, String>> querySurname(@FormParam("q") String x) {
-  			
-  			// Perform LDAP search
-  			List<HashMap<String, String>> matches = null;
-  			try {
-  				matches = LDAPPartialQuery.partialUserBySurname(x);
-  			} catch (LDAPObjectNotFoundException e){
-  				log.error("Error performing LDAPQuery: " + e.getMessage());
-  				return new ArrayList<HashMap<String, String>>();
-  			}
-			
-			  return matches;
-		  }
+	
+``` Java
+@POST @Path("/querySurname")
+public List<HashMap<String, String>> querySurname(@FormParam("q") String x) {	
+// Perform LDAP search
+	List<HashMap<String, String>> matches = null;
+	try {
+		matches = LDAPPartialQuery.partialUserBySurname(x);
+	} catch (LDAPObjectNotFoundException e){
+		log.error("Error performing LDAPQuery: " + e.getMessage());
+		return new ArrayList<HashMap<String, String>>();
+	}
+	return matches;
+}
+```
